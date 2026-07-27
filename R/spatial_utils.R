@@ -6,7 +6,7 @@
 #' the objective function. Dispatches to C++ routines for numeric arrays or a dedicated
 #' list-handler for list-arrays.
 #'
-#' @param spdata A spatial data object. Can be a 3-dimensional array (first two dimensions
+#' @param spdata A spatial data object. Can be a d-dimensional array (first d-1 dimensions
 #'   are the spatial grid, third dimension is the coordinate index of a multivariate random field)
 #'   or a list-array for complex objects.
 #' @param objfunc The objective function to be evaluated over directions to obtain the argmax.
@@ -43,19 +43,13 @@ get_argmax_indices <- function(spdata, objfunc, lags, minimize = F) {
   return(res)
 }
 
-#' D-dimensional generalization for list-based spatial data
+
+#' Find index of lag vector that maximizes objective function at each grid point for list data
 #'
 #' @description
-#' Resolves the optimizing lag index across a $D$-dimensional grid where each grid
+#' Resolves the optimizing lag index across a $d$-dimensional grid where each grid
 #' point contains an arbitrary object (stored as a list). It uses a linear-offset
 #' stride trick to efficiently compute lagged differences without nested loops.
-#'
-#' @details
-#' Rather than nested loops over explicit axes, this reuses the same stride/linear-offset
-#' trick as the numeric d-dim version: a lag vector becomes one fixed linear offset, valid
-#' as long as interior points stay far enough from the boundary along every axis (enforced
-#' via a Euclidean-radius bound). The trick is agnostic to element type, so it applies to
-#' list-arrays exactly as it did to numeric arrays.
 #'
 #' @param spdata A list-array with \code{dim(spdata)} of length $d$, containing one
 #'   arbitrary object per grid point.
@@ -116,24 +110,6 @@ get_argmax_indices.list <- function(spdata, objfunc, lags, minimize = F) {
   spMaximizer
 }
 
-#' Convert index field to indicator field
-#'
-#' @param indexField Matrix of indices (integers from 1 to nh)
-#' @param nh Number of possible indices
-#' @returns 3-dimensional array: first two dimensions are spatial grid, third dimension is indicator for each index (NA if it was NA in indexField)
-# indexToIndicatorField <- function(indexField, nh) {
-#   d <- dim(indexField)
-#   nx <- d[1]
-#   ny <- d[2]
-#
-#   indicatorField <- array(0, dim = c(nx, ny, nh))
-#
-#   for (k in 1:nh) {
-#     indicatorField[,,k] <- (indexField == k) * 1
-#   }
-#
-#   return(indicatorField)
-# }
 
 #' Compute deviation from uniformity test statistic
 #'
@@ -167,10 +143,11 @@ deviationFromUnif <- function(spIndex, nh) {
               nObs = nObs))
 }
 
-#' Estimate Local (Block) Proportions Across Arbitrary-Dimensional Categorical Fields
+
+#' Estimate Variance in  Local (Block) Proportions Across Arbitrary-Dimensional Categorical Fields
 #'
 #' @description
-#' Computes empirical block proportion vectors for categorical fields across $D$ spatial
+#' Computes empirical variance in block proportion vectors for categorical fields across $D$ spatial
 #' dimensions without explicitly materializing sparse one-hot indicator arrays in memory.
 #' Accepts either a single spatial field or an $S$-stacked multi-layer field (e.g., across
 #' distinct directions, variables, or time steps). Stacked encodings are concatenated

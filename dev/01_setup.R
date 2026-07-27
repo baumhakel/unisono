@@ -59,6 +59,10 @@ usethis::use_build_ignore(".github")
 # do not stop when not all are same length: this might be on purpose to compensate delta
 
 
+# to add github URL
+usethis::use_github_links()
+
+
 # 3. Testing Infrastructure
 usethis::use_testthat(3)
 # usethis::use_test("fit_model") ??

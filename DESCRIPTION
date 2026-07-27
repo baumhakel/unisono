@@ -8,16 +8,19 @@ Authors@R: c(
       given = "Julius",
       family = "Baumhakel",
       email = "baumhakel@tugraz.at",
+      comment = c("ORCID = 0009-0006-8999-7303"),
       role = c("aut", "cre")
     ),
     person(
       given = "Siegfried",
       family = "Hörmann",
+      comment = c("ORCID = 0000-0001-5878-2840"),
       role = "aut"
     ),
     person(
       given = "Matthias",
       family = "Neumann",
+      comment = c("ORCID = 0000-0002-5782-6773"),
       role = "aut"
     )
   )
@@ -43,8 +46,6 @@ Imports:
 LinkingTo: Rcpp
 Suggests: 
     geoR,
-    knitr,
-    rmarkdown,
     sp,
     testthat (>= 3.0.0),
     withr

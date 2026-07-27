@@ -223,11 +223,12 @@ IntegerVector runGridSearch(const NumericVector& spdata,
 // Exported entry points
 // =====================================================================
 
-//' Grid search using a user-supplied R objective function
+//' Finds maximizing lag at every point using a user-supplied R objective function
 //'
 //' @description
-//' Performs a grid search over spatial lag vectors using a custom,
-//' user-supplied R objective function evaluated at each point.
+//' For each point of x spdata so that x+y is in spdata for every row y of lagmat,
+//' computes the row index y maximizing the objective function at x. Uses
+//' user-supplied R objective function which is evaluated at each point.
 //'
 //' @param spdata A numeric vector representing the spatial field values.
 //' @param objfunc A user-supplied R function taking `(z0, zlagged)` and returning numeric scores.
@@ -249,11 +250,13 @@ IntegerVector argmaxLagIndexCpp(NumericVector spdata, Function objfunc,
                       });
 }
 
-//' Grid search using the native squared norm-difference objective
+//' Finds maximizing lag at every point using norm of difference as objective function
 //'
 //' @description
-//' Performs an optimized grid search using the native squared norm-difference
-//' objective. Bypasses R callbacks per grid point, making it substantially faster
+//' For each point of x spdata so that x+y is in spdata for every row y of lagmat,
+//' computes the row index y maximizing the objective function at x. Objective function
+//' is squared norm of (multivariate) difference.
+//' Bypasses R callbacks per grid point, making it substantially faster
 //' and safe to parallelize.
 //'
 //' @param spdata A numeric vector representing the spatial field values.

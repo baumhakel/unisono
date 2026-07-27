@@ -4,16 +4,26 @@
 \name{unisono-package}
 \alias{unisono}
 \alias{unisono-package}
-\title{unisono: What the Package Does (Title Case)}
+\title{unisono: UNiformity-based ISOtropy testing for Nonscalar Objects}
 \description{
-More about what it does (maybe more than one line). Continuation lines should be indented.
+Performs isotropy test for random fields observed on regular grids. Supports multivariate and abstract data. Provides efficient C++ implementations to evaluate directional dependencies across spatial lags using standard or user-defined objective functions. Includes diagnostic visualizations.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/baumhakel/unisono}
+  \item Report bugs at \url{https://github.com/baumhakel/unisono/issues}
+}
+
 }
 \author{
-\strong{Maintainer}: Jane Doe \email{jane@example.com}
+\strong{Maintainer}: Julius Baumhakel \email{baumhakel@tugraz.at}
 
 Authors:
 \itemize{
-  \item Jane Doe \email{jane@example.com}
+  \item Julius Baumhakel \email{baumhakel@tugraz.at}
+  \item Siegfried Hörmann
+  \item Matthias Neumann
 }
 
 }

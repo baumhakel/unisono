@@ -7,7 +7,7 @@
 \alias{uni_iso_grid.geodata}
 \alias{uni_iso_grid.SpatialGridDataFrame}
 \alias{uni_iso_grid.default}
-\title{Isotropy test for function-valued random fields on an n-dimensional grid}
+\title{Isotropy test for random fields on a d-dimensional grid}
 \usage{
 uni_iso_grid(
   spdata,
@@ -82,7 +82,7 @@ Default is `FALSE` (maximize).}
 (each row is a lag vector in the scale of the grid step size). If not specified,
 defaults to a single lag set of unit vectors in each spatial dimension and their negatives.
 Lag vectors in the same matrix need to be of the same norm and fulfill the condition
-outlined in Baumhakel, Hörmann, Neumann (2026+).}
+outlined in Baumhakel et al. (2026+).}
 
 \item{window_dims}{Integer vector. Dimensions of the moving window used to estimate
 the asymptotic long-run covariance matrix. If not specified, defaults to a vector of 2's.}
@@ -104,7 +104,7 @@ An object of class `unifIsoResult` containing:
 }
 \description{
 Performs a uniformity-based isotropy test for spatial data on a regular grid based on
-Baumhakel, Hörmann, Neumann (2026+).
+Baumhakel et al. (2026+).
 The function accepts matrices, multidimensional arrays, `SpatialGridDataFrame`, and `geodata` objects.
 Depending on the data type, it evaluates the given objective function over specified spatial lags
 at every point in the field to find maximizing directions. The proportion of maximizers
@@ -169,4 +169,7 @@ if (requireNamespace("geoR", quietly = TRUE)) {
   plot(res3)
 
 }
+}
+\references{
+Baumhakel, J., Hörmann, S., & Neumann M. (2026+). \emph{Testing isotropy of random fields with values in abstract spaces}
 }

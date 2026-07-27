@@ -1,8 +1,8 @@
-#' Isotropy test for function-valued random fields on an n-dimensional grid
+#' Isotropy test for random fields on a d-dimensional grid
 #'
 #' @description
 #' Performs a uniformity-based isotropy test for spatial data on a regular grid based on
-#' Baumhakel, Hörmann, Neumann (2026+).
+#' Baumhakel et al. (2026+).
 #' The function accepts matrices, multidimensional arrays, `SpatialGridDataFrame`, and `geodata` objects.
 #' Depending on the data type, it evaluates the given objective function over specified spatial lags
 #' at every point in the field to find maximizing directions. The proportion of maximizers
@@ -23,7 +23,7 @@
 #'   (each row is a lag vector in the scale of the grid step size). If not specified,
 #'   defaults to a single lag set of unit vectors in each spatial dimension and their negatives.
 #'   Lag vectors in the same matrix need to be of the same norm and fulfill the condition
-#'   outlined in Baumhakel, Hörmann, Neumann (2026+).
+#'   outlined in Baumhakel et al. (2026+).
 #' @param window_dims Integer vector. Dimensions of the moving window used to estimate
 #'   the asymptotic long-run covariance matrix. If not specified, defaults to a vector of 2's.
 #' @param overlap_dims Integer vector. Dimensions of overlap for the moving window. If not specified,
@@ -39,6 +39,8 @@
 #'   \item{lags_list}{The used list of lags.}
 #'   \item{window_dims}{The used window dimensions.}
 #'   \item{overlap_dims}{The used overlap dimensions.}
+#'
+#' @references Baumhakel, J., Hörmann, S., & Neumann M. (2026+). \emph{Testing isotropy of random fields with values in abstract spaces}
 #'
 #' @export
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/spatial_utils.R
 \name{longrunvariance_from_indexfield}
 \alias{longrunvariance_from_indexfield}
-\title{Estimate Local (Block) Proportions Across Arbitrary-Dimensional Categorical Fields}
+\title{Estimate Variance in  Local (Block) Proportions Across Arbitrary-Dimensional Categorical Fields}
 \usage{
 longrunvariance_from_indexfield(
   indexField,
@@ -35,7 +35,7 @@ A list containing:
   \item{n_windows}{The total number of subwindows evaluated.}
 }
 \description{
-Computes empirical block proportion vectors for categorical fields across $D$ spatial
+Computes empirical variance in block proportion vectors for categorical fields across $D$ spatial
 dimensions without explicitly materializing sparse one-hot indicator arrays in memory.
 Accepts either a single spatial field or an $S$-stacked multi-layer field (e.g., across
 distinct directions, variables, or time steps). Stacked encodings are concatenated

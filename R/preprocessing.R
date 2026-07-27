@@ -1,9 +1,5 @@
 
-
-
-
-
-#' Convert a SpatialGridDataFrame to a D-Dimensional Numeric Array
+#' Convert a SpatialGridDataFrame to a d-Dimensional Numeric Array
 #'
 #' @description
 #' Reshapes the attribute data of a SpatialGridDataFrame into an array based
@@ -46,12 +42,6 @@
 
   res_array
 }
-
-
-
-
-
-
 
 
 #' Convert a SpatialGridDataFrame to a D-Dimensional List-Array
@@ -185,6 +175,7 @@
   res_array
 }
 
+
 #' Validate Inputs for Isotropy Grid Testing
 #'
 #' @description
@@ -288,7 +279,6 @@
 }
 
 
-
 #' Internal Multi-Assignment Operator
 #'
 #' @description
@@ -302,6 +292,7 @@
     assign(targets[i], rvalues[[i]], envir = parent.frame())
   }
 }
+
 
 #' Get Information from Lags List
 #'
