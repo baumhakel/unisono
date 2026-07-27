@@ -17,13 +17,13 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Julius Baumhakel \email{baumhakel@tugraz.at}
+\strong{Maintainer}: Julius Baumhakel \email{baumhakel@tugraz.at} (ORCID = 0009-0006-8999-7303)
 
 Authors:
 \itemize{
-  \item Julius Baumhakel \email{baumhakel@tugraz.at}
-  \item Siegfried Hörmann
-  \item Matthias Neumann
+  \item Julius Baumhakel \email{baumhakel@tugraz.at} (ORCID = 0009-0006-8999-7303)
+  \item Siegfried Hörmann (ORCID = 0000-0001-5878-2840)
+  \item Matthias Neumann (ORCID = 0000-0002-5782-6773)
 }
 
 }
