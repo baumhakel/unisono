@@ -50,7 +50,6 @@ Suggests:
     testthat (>= 3.0.0),
     withr
 Config/testthat/edition: 3
-VignetteBuilder: knitr
 Config/roxygen2/version: 8.0.0
 URL: https://github.com/baumhakel/unisono
 BugReports: https://github.com/baumhakel/unisono/issues
