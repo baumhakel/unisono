@@ -70,6 +70,8 @@ urlchecker::url_check()
 # devtools::release() deprecated
 # get tar.gz
 devtools::build()
+# check finished tarball
+devtools::check_built("../unisono_0.1.0.tar.gz", cran = TRUE)
 
 
 # 5. Build documentation website (optional)
