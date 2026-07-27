@@ -54,6 +54,23 @@ rhub::rhub_setup()
 # later
 # Submit checks across multiple platforms
 rhub::rhub_check()
+# rhub will run you through.
+
+
+# R development version for windows
+devtools::check_win_devel()
+devtools::check_win_release()
+
+
+# check urls
+urlchecker::url_check()
+
+
+# release
+# devtools::release() deprecated
+# get tar.gz
+devtools::build()
+
 
 # 5. Build documentation website (optional)
 # pkgdown::build_site()

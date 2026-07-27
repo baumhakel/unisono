@@ -38,6 +38,7 @@ usethis::use_package("sp", type = "Suggests")
 
 # ignore these directories
 usethis::use_build_ignore(".renv")
+usethis::use_build_ignore("renv.lock")
 usethis::use_build_ignore("rhub")
 usethis::use_build_ignore("whoami")
 usethis::use_build_ignore(".github")

@@ -8,3 +8,4 @@
 ^rhub$
 ^whoami$
 ^\.github$
+^cran-comments\.md$
