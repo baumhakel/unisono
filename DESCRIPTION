@@ -1,0 +1,53 @@
+Package: unisono
+Type: Package
+Title: UNiformity-based ISOtropy testing for Nonscalar Objects
+Version: 0.1.0
+Depends: R (>= 4.1.0)
+Authors@R: c(
+    person(
+      given = "Julius",
+      family = "Baumhakel",
+      email = "baumhakel@tugraz.at",
+      role = c("aut", "cre")
+    ),
+    person(
+      given = "Siegfried",
+      family = "Hörmann",
+      role = "aut"
+    ),
+    person(
+      given = "Matthias",
+      family = "Neumann",
+      role = "aut"
+    )
+  )
+Description: Performs isotropy test for random fields observed on regular grids.
+    Supports multivariate and abstract data. Provides efficient C++ implementations 
+    to evaluate directional dependencies across spatial lags using standard or 
+    user-defined objective functions. Includes diagnostic visualizations.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    cli,
+    CompQuadForm,
+    dplyr,
+    ggplot2,
+    ggrepel,
+    mvtnorm,
+    purrr,
+    Rcpp,
+    rlang,
+    tibble,
+    tidyr
+LinkingTo: Rcpp
+Suggests: 
+    geoR,
+    knitr,
+    rmarkdown,
+    sp,
+    testthat (>= 3.0.0),
+    withr
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0
