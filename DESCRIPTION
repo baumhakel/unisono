@@ -1,6 +1,6 @@
 Package: unisono
 Type: Package
-Title: UNiformity-based ISOtropy testing for Nonscalar Objects
+Title: Uniformity-Based Isotropy Testing for Nonscalar Objects
 Version: 0.1.0
 Depends: R (>= 4.1.0)
 Authors@R: c(
@@ -24,10 +24,11 @@ Authors@R: c(
       role = "aut"
     )
   )
-Description: Performs isotropy test for random fields observed on regular grids.
-    Supports multivariate and abstract data. Provides efficient C++ implementations 
-    to evaluate directional dependencies across spatial lags using standard or 
-    user-defined objective functions. Includes diagnostic visualizations.
+Description: Performs isotropy test for random fields observed on regular grids as
+    defined in Baumhakel, J., Hörmann, S., & Neumann M. (2026+). Supports multivariate 
+    and abstract data. Provides efficient C++ implementations to evaluate directional 
+    dependencies in localized structures by employing an argmax transformation using a 
+    standard or user-defined objective function. Includes diagnostic visualizations.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

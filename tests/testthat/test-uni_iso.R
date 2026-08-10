@@ -9,16 +9,19 @@ skip_if_not_installed("geoR")
 skip_if_not_installed("sp")
 skip_if_not_installed("withr")
 
+sz2 <- 20
+sz3 <- 8
+
 # Setup mock spatial data using the geoR package
 rf_dat2d <- withr::with_seed(1, {
-  geoR::grf(n = 2500, nsim=2,
-                      grid = expand.grid(1:50, 1:50),
+  geoR::grf(n = sz2^2, nsim=2,
+                      grid = expand.grid(1:sz2, 1:sz2),
                       cov.model = "exponential", cov.pars = c(1, 1), nugget = 0.1,
                       messages = FALSE)
 })
 rf_dat3d <- withr::with_seed(1, {
-  geoR::grf(n = 13^3, nsim=2,
-                      grid = expand.grid(1:13, 1:13, 1:13),
+  geoR::grf(n = sz3^3, nsim=2,
+                      grid = expand.grid(1:sz3, 1:sz3, 1:sz3),
                       cov.model = "exponential", cov.pars = c(1, 2), nugget = 0.1,
                       messages = FALSE)
 })
@@ -32,30 +35,30 @@ rf_dat3ds$data <- rf_dat3ds$data[,1]
 # --- Array field fixtures ---
 
 # Scalar field with a dummy dimension
-spd.asd <- array(rf_dat2d$data[,1], dim = c(50, 50, 1))
-spd.asd3 <- array(rf_dat3d$data[,1], dim = c(13, 13, 13, 1))
+spd.asd <- array(rf_dat2d$data[,1], dim = c(sz2, sz2, 1))
+spd.asd3 <- array(rf_dat3d$data[,1], dim = c(sz3, sz3, sz3, 1))
 
 # Scalar field without a dummy dimension
-spd.as <- array(rf_dat2d$data[,1], dim = c(50, 50))
-spd.as3 <- array(rf_dat3d$data[,1], dim = c(13, 13, 13))
+spd.as <- array(rf_dat2d$data[,1], dim = c(sz2, sz2))
+spd.as3 <- array(rf_dat3d$data[,1], dim = c(sz3, sz3, sz3))
 
 # Multivariate field
-spd.am <- array(rf_dat2d$data, dim = c(50, 50, 2))
-spd.am3 <- array(rf_dat3d$data, dim = c(13, 13, 13, 2))
+spd.am <- array(rf_dat2d$data, dim = c(sz2, sz2, 2))
+spd.am3 <- array(rf_dat3d$data, dim = c(sz3, sz3, sz3, 2))
 
 # --- List field fixtures ---
 
 # Scalar field
 spd.ls <- as.list(rf_dat2d$data[,1])
-dim(spd.ls) <- c(50, 50)
+dim(spd.ls) <- c(sz2, sz2)
 spd.ls3 <- as.list(rf_dat3d$data[,1])
-dim(spd.ls3) <- c(13, 13, 13)
+dim(spd.ls3) <- c(sz3, sz3, sz3)
 
 # Multivariate field
 spd.lm <- lapply(1:nrow(rf_dat2d$data), function(i) rf_dat2d$data[i,])
-dim(spd.lm) <- c(50, 50)
+dim(spd.lm) <- c(sz2, sz2)
 spd.lm3 <- lapply(1:nrow(rf_dat3d$data), function(i) rf_dat3d$data[i,])
-dim(spd.lm3) <- c(13, 13, 13)
+dim(spd.lm3) <- c(sz3, sz3, sz3)
 
 # --- SpatialGridDataFrame fixtures ---
 # Tests conversion pathways:
@@ -65,42 +68,42 @@ dim(spd.lm3) <- c(13, 13, 13)
 
 # Univariate array transformation
 spd.sgs <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5), cellsize = c(1, 1), cells.dim = c(50, 50)),
+  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5), cellsize = c(1, 1), cells.dim = c(sz2, sz2)),
   data = data.frame(field1 = rf_dat2d$data[,1])
 )
 spd.sgs3 <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5, 0.5), cellsize = c(1, 1, 1), cells.dim = c(13, 13, 13)),
+  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5, 0.5), cellsize = c(1, 1, 1), cells.dim = c(sz3, sz3, sz3)),
   data = data.frame(field1 = rf_dat3d$data[,1])
 )
 
 # Multivariate array transformation
 spd.sgm <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5), cellsize = c(1, 1), cells.dim = c(50, 50)),
+  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5), cellsize = c(1, 1), cells.dim = c(sz2, sz2)),
   data = data.frame(field1 = rf_dat2d$data)
 )
 spd.sgm3 <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5, 0.5), cellsize = c(1, 1, 1), cells.dim = c(13, 13, 13)),
+  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5, 0.5), cellsize = c(1, 1, 1), cells.dim = c(sz3, sz3, sz3)),
   data = data.frame(field1 = rf_dat3d$data)
 )
 
 # Univariate list transformation (using strings to force list routing)
 spd.sgsl <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5), cellsize = c(1, 1), cells.dim = c(50, 50)),
+  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5), cellsize = c(1, 1), cells.dim = c(sz2, sz2)),
   data = data.frame(field1 = ifelse(rf_dat2d$data[,1] > 0, "a", "b"))
 )
 
 spd.sgsl3 <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5, 0.5), cellsize = c(1, 1, 1), cells.dim = c(13, 13, 13)),
+  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5, 0.5), cellsize = c(1, 1, 1), cells.dim = c(sz3, sz3, sz3)),
   data = data.frame(field1 = ifelse(rf_dat3d$data[,1] > 0, "a", "b"))
 )
 
 # Multivariate list transformation
 spd.sgml <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5), cellsize = c(1, 1), cells.dim = c(50, 50)),
+  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5), cellsize = c(1, 1), cells.dim = c(sz2, sz2)),
   data = data.frame(field1 = ifelse(rf_dat2d$data[,1] > 0, "a", "b"), field2 = ifelse(rf_dat2d$data[,2] > 0, "a", "b"))
 )
 spd.sgml3 <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5, 0.5), cellsize = c(1, 1, 1), cells.dim = c(13, 13, 13)),
+  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5, 0.5), cellsize = c(1, 1, 1), cells.dim = c(sz3, sz3, sz3)),
   data = data.frame(field1 = ifelse(rf_dat3d$data[,1] > 0, "a", "b"), field2 = ifelse(rf_dat3d$data[,2] > 0, "a", "b"))
 )
 
@@ -265,13 +268,13 @@ test_that("uni_iso_grid works across all input variations (array/list, uni/multi
 })
 
 rf_dat2d <- withr::with_seed(1, {
-  geoR::grf(n = 2500, nsim=1,
-                      grid = expand.grid(1:50, 1:50),
+  geoR::grf(n = sz2^2, nsim=1,
+                      grid = expand.grid(1:sz2, 1:sz2),
                       cov.model = "exponential", cov.pars = c(1, 1), nugget = 0.1,
                       messages = FALSE)
 })
 
-spd.as <- array(rf_dat2d$data, dim = c(50, 50))
+spd.as <- array(rf_dat2d$data, dim = c(sz2, sz2))
 
 # Define multiple lag matrices
 lags_list <- list(
