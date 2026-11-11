@@ -65,9 +65,9 @@ spd.ls3 <- as.list(rf_dat3d$data[, 1])
 dim(spd.ls3) <- c(sz3, sz3, sz3)
 
 # Multivariate field
-spd.lm <- lapply(1:nrow(rf_dat2d$data), function(i) rf_dat2d$data[i, ])
+spd.lm <- lapply(seq_len(nrow(rf_dat2d$data)), function(i) rf_dat2d$data[i, ])
 dim(spd.lm) <- c(sz2, sz2)
-spd.lm3 <- lapply(1:nrow(rf_dat3d$data), function(i) rf_dat3d$data[i, ])
+spd.lm3 <- lapply(seq_len(nrow(rf_dat3d$data)), function(i) rf_dat3d$data[i, ])
 dim(spd.lm3) <- c(sz3, sz3, sz3)
 
 # --- SpatialGridDataFrame fixtures ---
@@ -338,7 +338,7 @@ lags_list <- list(
 # Custom objective function
 obj.abs <- function(z0, zlagged) {
   diffs <- zlagged -
-    matrix(rep(z0, nrow(zlagged)), nrow = nrow(zlagged), byrow = T)
+    matrix(rep(z0, nrow(zlagged)), nrow = nrow(zlagged), byrow = TRUE)
   sqnorms <- rowSums(abs(diffs))
   return(sqnorms)
 }

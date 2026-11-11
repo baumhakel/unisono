@@ -24,7 +24,6 @@
 
   # Extract grid topology and attribute dimensions
   spatial_dims <- sgdf@grid@cells.dim
-  n_spatial <- length(spatial_dims)
 
   data_mat <- as.matrix(sgdf@data)
   m_vars <- ncol(data_mat)
@@ -69,7 +68,6 @@
   }
 
   spatial_dims <- sgdf@grid@cells.dim
-  n_spatial <- length(spatial_dims)
   n_cells <- prod(spatial_dims)
   df_data <- sgdf@data
   n_cols <- ncol(df_data)
@@ -145,7 +143,6 @@
   gdt$coords <- round(gdt$coords)
 
   # Extract grid topology and attribute dimensions
-  n_spatial <- ncol(gdt$coords)
   spatial_dims <- apply(gdt$coords, MARGIN = 2, max)
 
   data_mat <- as.matrix(gdt$data)

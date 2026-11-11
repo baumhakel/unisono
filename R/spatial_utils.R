@@ -21,7 +21,7 @@
 #'
 #' @keywords internal
 #' @noRd
-get_argmax_indices <- function(spdata, objfunc, lags, minimize = F) {
+get_argmax_indices <- function(spdata, objfunc, lags, minimize = FALSE) {
   dtype <- class(spdata[1])
 
   # Dispatch based on the underlying data type of the spatial field
@@ -65,7 +65,7 @@ get_argmax_indices <- function(spdata, objfunc, lags, minimize = F) {
 #'
 #' @keywords internal
 #' @noRd
-get_argmax_indices.list <- function(spdata, objfunc, lags, minimize = F) {
+get_argmax_indices.list <- function(spdata, objfunc, lags, minimize = FALSE) {
   nvec <- dim(spdata)
   stopifnot(is.list(spdata), !is.null(nvec))
   d <- length(nvec)
@@ -251,7 +251,6 @@ longrunvariance_from_indexfield <- function(
 
   # Compute the global spatial block proportion as a baseline
   muhat <- block_proportions(indexField, coords_list, nh, S)
-  K <- length(muhat)
 
   # Generate multi-dimensional step combination indices (Cartesian product)
   lag_sequences <- lapply(n_lags, seq_len)
