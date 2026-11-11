@@ -58,7 +58,15 @@ devtools::check_mac_release()
 
 rhub::rhub_check(platforms = c("linux", "macos-arm64", "windows",
                                "atlas", "mkl", "nosuggests"))
-# compiled code? add "clang-asan", "valgrind"
+# there was a problem with mkl (caching). rerun just it after deleting caches on github
+rhub::rhub_check(platforms = "mkl")
+
+# there was a problem with linux (resolving urls for ubuntu installations). rerun.
+# rhub::rhub_check(platforms = "linux")
+# did not work again
+
+# compiled code: optional memory checks (failed at dependency install on R-hub, Nov 2026)
+# rhub::rhub_check(platforms = c("clang-asan", "valgrind"))
 
 # ==========================================================================
 # 7. Build and check the final tarball
