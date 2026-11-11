@@ -1,6 +1,6 @@
 Package: unisono
 Type: Package
-Title: Uniformity-Based Isotropy Testing for Non-scalar Objects
+Title: Uniformity-Based Isotropy Testing for Non-Scalar Objects
 Version: 0.1.0
 Depends: R (>= 4.1.0)
 Authors@R: c(
@@ -9,27 +9,27 @@ Authors@R: c(
       family = "Baumhakel",
       email = "baumhakel@tugraz.at",
       comment = c("ORCID = 0009-0006-8999-7303"),
-      role = c("aut", "cre")
+      role = c("aut", "cre", "cph")
     ),
     person(
       given = "Siegfried",
       family = "Hörmann",
       comment = c("ORCID = 0000-0001-5878-2840"),
-      role = "aut"
+      role = "ctb"
     ),
     person(
       given = "Matthias",
       family = "Neumann",
       comment = c("ORCID = 0000-0002-5782-6773"),
-      role = "aut"
+      role = "ctb"
     )
   )
 Language: en-US
-Description: Performs a test of isotropy for random fields observed on regular
+Description: Hypothesis test for isotropy in random fields observed on regular
     grids, as proposed by Baumhakel, Hörmann and Neumann (2026)
-    <doi:10.48550/arXiv.2611.14011>. Supports multivariate and abstract (e.g.
+    <arXiv:2611.14011>. Supports multivariate and abstract (e.g.
     scalar-, but also function- or object-valued) data. Directional
-    dependencies in localized structures are evaluated via an 'argmax'
+    dependencies in localized structures are evaluated via an argmax
     transformation based on a standard or user-defined objective function,
     with efficient 'C++' implementations. Includes diagnostic visualizations.
 License: MIT + file LICENSE
