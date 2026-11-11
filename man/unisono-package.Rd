@@ -4,9 +4,9 @@
 \name{unisono-package}
 \alias{unisono}
 \alias{unisono-package}
-\title{unisono: Uniformity-Based Isotropy Testing for Nonscalar Objects}
+\title{unisono: Uniformity-Based Isotropy Testing for Non-scalar Objects}
 \description{
-Performs a test of isotropy for random fields observed on regular grids, as proposed by Baumhakel, Hörmann and Neumann (2026) \doi{10.48550/arXiv.2611.14011}. Supports multivariate and abstract (e.g. scalar-, but also function- or object-valued) data. Directional dependencies in localized structures are evaluated via an argmax transformation based on a standard or user-defined objective function, with efficient 'C++' implementations. Includes diagnostic visualizations.
+Performs a test of isotropy for random fields observed on regular grids, as proposed by Baumhakel, Hörmann and Neumann (2026) \doi{10.48550/arXiv.2611.14011}. Supports multivariate and abstract (e.g. scalar-, but also function- or object-valued) data. Directional dependencies in localized structures are evaluated via an 'argmax' transformation based on a standard or user-defined objective function, with efficient 'C++' implementations. Includes diagnostic visualizations.
 }
 \seealso{
 Useful links:

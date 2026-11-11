@@ -52,7 +52,7 @@ devtools::check(cran = TRUE)             # Ctrl+Shift+E; aim for 0 errors/warnin
 # ==========================================================================
 devtools::check_win_devel()
 devtools::check_win_release()
-devtools::check_win_oldrel()             # only if Depends allows older R
+# devtools::check_win_oldrel()             # only if Depends allows older R
 devtools::check_mac_release()
 
 rhub::rhub_check(platforms = c("linux", "macos-arm64", "windows",

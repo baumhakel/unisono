@@ -9,3 +9,4 @@
 ^whoami$
 ^\.github$
 ^cran-comments\.md$
+^\.Rprofile$

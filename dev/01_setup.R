@@ -75,6 +75,8 @@ usethis::use_testthat(3)
 # ------------------------------------------------------------------------------
 # usethis::use_vignette("methodology-overview")  # adds knitr/rmarkdown to Suggests
 # not added for now
+# desc::desc_del("VignetteBuilder")
+# desc::desc_del_dep("knitr")
 
 # ------------------------------------------------------------------------------
 # 6. GitHub
@@ -92,6 +94,7 @@ usethis::use_build_ignore(c(
   ".github", # GitHub Actions (incl. R-hub workflow)
   "whoami"
 ))
+usethis::use_build_ignore(".Rprofile")
 # check result with: readLines(".Rbuildignore")
 
 # ------------------------------------------------------------------------------
@@ -108,8 +111,3 @@ rhub::rhub_setup() # writes .github/workflows/rhub.yaml
 # -> commit + push the workflow file, then:
 rhub::rhub_doctor() # verifies token + repo setup
 
-# ==============================================================================
-# TODO
-# ==============================================================================
-# - [ ] Remove unused Imports (search R/ for "pkg::" for each package)
-# - [ ] Replace magrittr `.` in geom_text_repel() with explicit data / .data$col
