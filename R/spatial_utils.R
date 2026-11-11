@@ -35,7 +35,9 @@ get_argmax_indices <- function(spdata, objfunc, lags, minimize = F) {
       if (objfunc == "normdiff") {
         res <- argmaxLagIndexSqDiffCpp(spdata, lags, minimize)
       } else {
-        stop("Unsupported objfunc for numeric spdata. Must be a function or 'normdiff'.")
+        stop(
+          "Unsupported objfunc for numeric spdata. Must be a function or 'normdiff'."
+        )
       }
     }
   }
@@ -68,7 +70,11 @@ get_argmax_indices.list <- function(spdata, objfunc, lags, minimize = F) {
   stopifnot(is.list(spdata), !is.null(nvec))
   d <- length(nvec)
   if (ncol(lags) != d) {
-    stop(sprintf("ncol(lags) (%d) must equal length(dim(spdata)) (%d)", ncol(lags), d))
+    stop(sprintf(
+      "ncol(lags) (%d) must equal length(dim(spdata)) (%d)",
+      ncol(lags),
+      d
+    ))
   }
 
   Rrad <- max(sqrt(rowSums(lags^2)))
@@ -76,13 +82,14 @@ get_argmax_indices.list <- function(spdata, objfunc, lags, minimize = F) {
 
   # Determine valid interior grid ranges to prevent out-of-bounds indexing
   ranges <- lapply(nvec, function(n) {
-    lo <- ceiling(1 + Rrad); hi <- floor(n - Rrad)
+    lo <- ceiling(1 + Rrad)
+    hi <- floor(n - Rrad)
     if (hi < lo) integer(0) else lo:hi
   })
 
   spMaximizer <- array(NA_integer_, dim = nvec)
   if (any(vapply(ranges, length, integer(1)) == 0)) {
-    return(spMaximizer)  # no interior points for this lags_list/delta
+    return(spMaximizer) # no interior points for this lags_list/delta
   }
 
   # Calculate column-major strides for linear indexing
@@ -95,7 +102,7 @@ get_argmax_indices.list <- function(spdata, objfunc, lags, minimize = F) {
   # Iterate over valid interior points using the linear index
   for (p in seq_len(nrow(idxgrid))) {
     base <- baselin[p]
-    z0 <- spdata[[base]]                 # single linear index -> raw object
+    z0 <- spdata[[base]] # single linear index -> raw object
     zlagged <- spdata[base + lagoffsets] # linear indices -> stacked sub-list
 
     obj_vals <- objfunc(z0, zlagged)
@@ -104,7 +111,11 @@ get_argmax_indices.list <- function(spdata, objfunc, lags, minimize = F) {
     maximizers <- which(obj_vals == best)
 
     # Handle ties randomly to prevent directional bias
-    spMaximizer[base] <- if (length(maximizers) > 1) sample(maximizers, 1) else maximizers
+    spMaximizer[base] <- if (length(maximizers) > 1) {
+      sample(maximizers, 1)
+    } else {
+      maximizers
+    }
   }
 
   spMaximizer
@@ -128,19 +139,16 @@ get_argmax_indices.list <- function(spdata, objfunc, lags, minimize = F) {
 #' @keywords internal
 #' @noRd
 deviationFromUnif <- function(spIndex, nh) {
-
   # Tabulate occurrences of each category state
   indexCnts <- table(factor(spIndex, levels = 1:nh))
   nObs <- sum(indexCnts)
-  unifCnts <- rep(nObs/nh, nh)
+  unifCnts <- rep(nObs / nh, nh)
 
   # Compute normalized deviations
-  Tstatv <- 1/sqrt(nObs) * (indexCnts - unifCnts)
+  Tstatv <- 1 / sqrt(nObs) * (indexCnts - unifCnts)
   Tstat <- sum(Tstatv^2)
 
-  return(list(Tstat = Tstat,
-              Tstatv = Tstatv,
-              nObs = nObs))
+  return(list(Tstat = Tstat, Tstatv = Tstatv, nObs = nObs))
 }
 
 
@@ -177,12 +185,13 @@ deviationFromUnif <- function(spIndex, nh) {
 #' \dontrun{
 #' # Placeholder for examples if this function remains exported
 #' }
-longrunvariance_from_indexfield <- function(indexField,
-                                            nh,
-                                            window_dims,
-                                            lims_mat,
-                                            overlap_dims = rep(0L, length(window_dims))) {
-
+longrunvariance_from_indexfield <- function(
+  indexField,
+  nh,
+  window_dims,
+  lims_mat,
+  overlap_dims = rep(0L, length(window_dims))
+) {
   # Assert array dimensions and safely extract spatial structures
   d_orig <- dim(indexField)
   if (is.null(d_orig)) {
@@ -190,7 +199,7 @@ longrunvariance_from_indexfield <- function(indexField,
   }
 
   total_dims <- length(d_orig)
-  n_spatial  <- length(window_dims)
+  n_spatial <- length(window_dims)
 
   # Safely handle the trailing dimension for stacked fields (S)
   if (total_dims == n_spatial) {
@@ -199,13 +208,19 @@ longrunvariance_from_indexfield <- function(indexField,
   } else if (total_dims == n_spatial + 1L) {
     S <- d_orig[total_dims]
   } else {
-    stop(sprintf(
-      "Dimension mismatch: `window_dims` has length %d, but `indexField` has %d dimensions.",
-      n_spatial, total_dims
-    ), call. = FALSE)
+    stop(
+      sprintf(
+        "Dimension mismatch: `window_dims` has length %d, but `indexField` has %d dimensions.",
+        n_spatial,
+        total_dims
+      ),
+      call. = FALSE
+    )
   }
 
-  if (!is.matrix(lims_mat) || nrow(lims_mat) != n_spatial || ncol(lims_mat) != 2L) {
+  if (
+    !is.matrix(lims_mat) || nrow(lims_mat) != n_spatial || ncol(lims_mat) != 2L
+  ) {
     stop("`lims_mat` must be a D x 2 matrix of spatial bounds.", call. = FALSE)
   }
 
@@ -215,34 +230,40 @@ longrunvariance_from_indexfield <- function(indexField,
   })
 
   axis_lengths <- vapply(coords_list, length, integer(1))
-  step_dims    <- window_dims - overlap_dims
+  step_dims <- window_dims - overlap_dims
 
   if (any(step_dims <= 0L)) {
-    stop("`window_dims` must be strictly greater than `overlap_dims` across all axes.", call. = FALSE)
+    stop(
+      "`window_dims` must be strictly greater than `overlap_dims` across all axes.",
+      call. = FALSE
+    )
   }
 
   # Establish the number of sliding steps available per axis
   n_lags <- floor((axis_lengths - overlap_dims) / step_dims)
 
   if (any(n_lags < 1L)) {
-    stop("Moving window dimensions exceed spatial domain boundaries.", call. = FALSE)
+    stop(
+      "Moving window dimensions exceed spatial domain boundaries.",
+      call. = FALSE
+    )
   }
 
   # Compute the global spatial block proportion as a baseline
   muhat <- block_proportions(indexField, coords_list, nh, S)
-  K     <- length(muhat)
+  K <- length(muhat)
 
   # Generate multi-dimensional step combination indices (Cartesian product)
   lag_sequences <- lapply(n_lags, seq_len)
-  grid_indices  <- as.matrix(expand.grid(lag_sequences))
+  grid_indices <- as.matrix(expand.grid(lag_sequences))
 
   n_total_windows <- nrow(grid_indices)
-  window_vol      <- prod(window_dims)
+  window_vol <- prod(window_dims)
 
   # Pre-calculate coordinate sub-windows for every lag step across every dimension
   windows_by_axis <- lapply(seq_len(n_spatial), function(dim_idx) {
-    w_len    <- window_dims[dim_idx]
-    s_step   <- step_dims[dim_idx]
+    w_len <- window_dims[dim_idx]
+    s_step <- step_dims[dim_idx]
     axis_vec <- coords_list[[dim_idx]]
 
     lapply(seq_len(n_lags[dim_idx]), function(step_i) {
@@ -252,14 +273,24 @@ longrunvariance_from_indexfield <- function(indexField,
   })
 
   # Execute vectorized subwindow traversal mapping grid blocks to deviations
-  dmu_list <- apply(grid_indices, 1L, function(step_vec) {
-    current_subwindow_coords <- lapply(seq_len(n_spatial), function(dim_idx) {
-      windows_by_axis[[dim_idx]][[step_vec[dim_idx]]]
-    })
+  dmu_list <- apply(
+    grid_indices,
+    1L,
+    function(step_vec) {
+      current_subwindow_coords <- lapply(seq_len(n_spatial), function(dim_idx) {
+        windows_by_axis[[dim_idx]][[step_vec[dim_idx]]]
+      })
 
-    muhat_window <- block_proportions(indexField, current_subwindow_coords, nh, S)
-    muhat_window - muhat
-  }, simplify = FALSE)
+      muhat_window <- block_proportions(
+        indexField,
+        current_subwindow_coords,
+        nh,
+        S
+      )
+      muhat_window - muhat
+    },
+    simplify = FALSE
+  )
 
   # Accumulate cross-product covariance terms and scale by window DOF
   cov_acc <- Reduce(`+`, lapply(dmu_list, function(dmu) outer(dmu, dmu)))
@@ -267,7 +298,7 @@ longrunvariance_from_indexfield <- function(indexField,
 
   list(
     sig = cov_est,
-    mu  = muhat,
+    mu = muhat,
     n_windows = n_total_windows
   )
 }
@@ -342,10 +373,12 @@ window_range <- function(b, step, width) {
 #' # Placeholder for examples if this function remains exported
 #' }
 block_proportions <- function(indexField, coords_list, nh, S) {
-
   # Structural Assertions
   if (!is.list(coords_list)) {
-    stop("`coords_list` must be a list of integer spatial index vectors.", call. = FALSE)
+    stop(
+      "`coords_list` must be a list of integer spatial index vectors.",
+      call. = FALSE
+    )
   }
 
   if (length(nh) == 1L && S > 1L) {
@@ -369,16 +402,17 @@ block_proportions <- function(indexField, coords_list, nh, S) {
   props <- numeric(sum(nh))
 
   # Establish cumulative offsets to map results back to a 1D vector
-  offsets_end   <- cumsum(nh)
+  offsets_end <- cumsum(nh)
   offsets_start <- offsets_end - nh + 1L
 
   # Evaluate proportions column-wise
   for (s in seq_len(S)) {
-    vals  <- subwindow_mat[, s]
+    vals <- subwindow_mat[, s]
     denom <- sum(!is.na(vals))
 
     if (denom > 0L) {
-      props[offsets_start[s]:offsets_end[s]] <- tabulate(vals, nbins = nh[s]) / denom
+      props[offsets_start[s]:offsets_end[s]] <- tabulate(vals, nbins = nh[s]) /
+        denom
     } else {
       # Fallback to zeros if the window contains strictly NAs
       props[offsets_start[s]:offsets_end[s]] <- 0.0

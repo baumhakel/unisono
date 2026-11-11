@@ -13,12 +13,20 @@
 #' @noRd
 add_angular_geometry <- function(data) {
   data |>
-    dplyr::mutate(angle = atan2(.data$lags[, 2], .data$lags[, 1]) %% (2 * pi)) |>
+    dplyr::mutate(
+      angle = atan2(.data$lags[, 2], .data$lags[, 1]) %% (2 * pi)
+    ) |>
     dplyr::arrange(.data$set, .data$angle) |>
     dplyr::group_by(.data$set) |>
     dplyr::mutate(
-      next_angle = dplyr::lead(.data$angle, default = dplyr::first(.data$angle) + 2 * pi),
-      prev_angle = dplyr::lag(.data$angle, default = dplyr::last(.data$angle) - 2 * pi),
+      next_angle = dplyr::lead(
+        .data$angle,
+        default = dplyr::first(.data$angle) + 2 * pi
+      ),
+      prev_angle = dplyr::lag(
+        .data$angle,
+        default = dplyr::last(.data$angle) - 2 * pi
+      ),
       a_min = (11 * .data$angle + 9 * .data$prev_angle) / 20,
       a_max = (11 * .data$angle + 9 * .data$next_angle) / 20
     ) |>
@@ -27,9 +35,17 @@ add_angular_geometry <- function(data) {
     dplyr::mutate(
       geom = purrr::map2(.data$a_min, .data$a_max, function(mi, ma) {
         if (mi < 0) {
-          data.frame(xmin = c(mi + 2 * pi, 0), xmax = c(2 * pi, ma), drawlab = c(TRUE, FALSE))
+          data.frame(
+            xmin = c(mi + 2 * pi, 0),
+            xmax = c(2 * pi, ma),
+            drawlab = c(TRUE, FALSE)
+          )
         } else if (ma > 2 * pi) {
-          data.frame(xmin = c(mi, 0), xmax = c(2 * pi, ma - 2 * pi), drawlab = c(FALSE, TRUE))
+          data.frame(
+            xmin = c(mi, 0),
+            xmax = c(2 * pi, ma - 2 * pi),
+            drawlab = c(FALSE, TRUE)
+          )
         } else {
           data.frame(xmin = mi, xmax = ma, drawlab = TRUE)
         }
@@ -81,7 +97,11 @@ add_indexed_geometry <- function(data, width = 0.6) {
 compute_facet_info <- function(data) {
   info <- data |>
     dplyr::group_by(.data$set) |>
-    dplyr::summarise(expected = 1 / sum(.data$drawlab), len = dplyr::first(.data$length), .groups = "drop")
+    dplyr::summarise(
+      expected = 1 / sum(.data$drawlab),
+      len = dplyr::first(.data$length),
+      .groups = "drop"
+    )
 
   info$label <- paste0(info$set, ": length ", round(info$len, 2))
   info
@@ -101,13 +121,21 @@ compute_facet_info <- function(data) {
 get_fill_col_scales <- function(cols) {
   if (is.null(cols)) {
     list(
-      fill = ggplot2::scale_fill_viridis_d(option = "mako", end = 0.7, guide = "none"),
-      col  = ggplot2::scale_color_viridis_d(option = "mako", end = 0.7, guide = "none")
+      fill = ggplot2::scale_fill_viridis_d(
+        option = "mako",
+        end = 0.7,
+        guide = "none"
+      ),
+      col = ggplot2::scale_color_viridis_d(
+        option = "mako",
+        end = 0.7,
+        guide = "none"
+      )
     )
   } else {
     list(
       fill = ggplot2::scale_fill_manual(values = cols, guide = "none"),
-      col  = ggplot2::scale_color_manual(values = cols, guide = "none")
+      col = ggplot2::scale_color_manual(values = cols, guide = "none")
     )
   }
 }
@@ -124,7 +152,11 @@ get_fill_col_scales <- function(cols) {
 #' @keywords internal
 #' @noRd
 strip_style <- function(setnames) {
-  if (setnames) ggplot2::element_text(face = "bold") else ggplot2::element_blank()
+  if (setnames) {
+    ggplot2::element_text(face = "bold")
+  } else {
+    ggplot2::element_blank()
+  }
 }
 
 #' Append Lollipop Base Layers to Plot
@@ -147,18 +179,49 @@ strip_style <- function(setnames) {
 add_lollipop_layers <- function(p, info, x, xmin, xmax) {
   p +
     ggplot2::geom_rect(
-      ggplot2::aes(xmin = .data[[xmin]], xmax = .data[[xmax]],
-                   ymin = .data$ci_lower, ymax = .data$ci_upper, fill = .data$set),
+      ggplot2::aes(
+        xmin = .data[[xmin]],
+        xmax = .data[[xmax]],
+        ymin = .data$ci_lower,
+        ymax = .data$ci_upper,
+        fill = .data$set
+      ),
       alpha = 0.3
     ) +
-    ggplot2::geom_hline(data = info, ggplot2::aes(yintercept = .data$expected),
-                        color = "firebrick", linetype = "dashed", linewidth = 1) +
-    ggplot2::geom_segment(ggplot2::aes(x = .data[[x]], xend = .data[[x]], y = 0, yend = .data$prop),
-                          color = "grey30", linewidth = 1) +
-    ggplot2::geom_point(ggplot2::aes(x = .data[[x]], y = .data$prop, color = .data$set), size = 3) +
-    ggplot2::geom_point(ggplot2::aes(x = .data[[x]], y = .data$prop),
-                        size = 3, stroke = 1, shape = 21, color = "black") +
-    ggrepel::geom_text_repel(data = info, ggplot2::aes(x = pi/12, y = .data$expected, label = paste0("1/", round(1/.data$expected))), color = "firebrick", vjust = -1, hjust = 0)
+    ggplot2::geom_hline(
+      data = info,
+      ggplot2::aes(yintercept = .data$expected),
+      color = "firebrick",
+      linetype = "dashed",
+      linewidth = 1
+    ) +
+    ggplot2::geom_segment(
+      ggplot2::aes(x = .data[[x]], xend = .data[[x]], y = 0, yend = .data$prop),
+      color = "grey30",
+      linewidth = 1
+    ) +
+    ggplot2::geom_point(
+      ggplot2::aes(x = .data[[x]], y = .data$prop, color = .data$set),
+      size = 3
+    ) +
+    ggplot2::geom_point(
+      ggplot2::aes(x = .data[[x]], y = .data$prop),
+      size = 3,
+      stroke = 1,
+      shape = 21,
+      color = "black"
+    ) +
+    ggrepel::geom_text_repel(
+      data = info,
+      ggplot2::aes(
+        x = pi / 12,
+        y = .data$expected,
+        label = paste0("1/", round(1 / .data$expected))
+      ),
+      color = "firebrick",
+      vjust = -1,
+      hjust = 0
+    )
 }
 
 #' Append Non-Overlapping Labels to Plot
@@ -176,11 +239,15 @@ add_lollipop_layers <- function(p, info, x, xmin, xmax) {
 #' @keywords internal
 #' @noRd
 add_repel_labels <- function(p, plot_data, x) {
-  p + ggrepel::geom_text_repel(
-    data = dplyr::filter(plot_data, .data$drawlab),
-    ggplot2::aes(x = .data[[x]], y = .data$prop, label = .data$label),
-    size = 3, color = "black", box.padding = 0.5, show.legend = FALSE
-  )
+  p +
+    ggrepel::geom_text_repel(
+      data = dplyr::filter(plot_data, .data$drawlab),
+      ggplot2::aes(x = .data[[x]], y = .data$prop, label = .data$label),
+      size = 3,
+      color = "black",
+      box.padding = 0.5,
+      show.legend = FALSE
+    )
 }
 
 #' Generate Rose Plot for Isotropy Results
@@ -205,20 +272,41 @@ add_repel_labels <- function(p, plot_data, x) {
 #' # Placeholder for rose plot usage
 #' }
 # rename to rose(..)
-unifIsoResult_roseplot <- function(uni.res, alpha, drawlabs = TRUE, cols = NULL, setnames = TRUE) {
+unifIsoResult_roseplot <- function(
+  uni.res,
+  alpha,
+  drawlabs = TRUE,
+  cols = NULL,
+  setnames = TRUE
+) {
   plot_data <- compute_ci_table(uni.res, alpha) |> add_angular_geometry()
   info <- compute_facet_info(plot_data)
   sc <- get_fill_col_scales(cols)
 
-  p <- ggplot2::ggplot(plot_data) |> add_lollipop_layers(info, x = "angle", xmin = "xmin", xmax = "xmax")
-  if (drawlabs) p <- add_repel_labels(p, plot_data, x = "angle")
+  p <- ggplot2::ggplot(plot_data) |>
+    add_lollipop_layers(info, x = "angle", xmin = "xmin", xmax = "xmax")
+  if (drawlabs) {
+    p <- add_repel_labels(p, plot_data, x = "angle")
+  }
 
-  p + sc$fill + sc$col +
-    ggplot2::scale_x_continuous(limits = c(0, 2 * pi), expand = c(0, 0),
-                                breaks = seq(0, 2 * pi - 0.001, by = pi / 4)) +
-    ggplot2::scale_y_continuous(breaks = seq(0, max(plot_data$prop) + 0.1, by = 0.05), expand = c(0, 0)) +
+  p +
+    sc$fill +
+    sc$col +
+    ggplot2::scale_x_continuous(
+      limits = c(0, 2 * pi),
+      expand = c(0, 0),
+      breaks = seq(0, 2 * pi - 0.001, by = pi / 4)
+    ) +
+    ggplot2::scale_y_continuous(
+      breaks = seq(0, max(plot_data$prop) + 0.1, by = 0.05),
+      expand = c(0, 0)
+    ) +
     ggplot2::coord_polar(start = -pi / 2, direction = -1) +
-    ggplot2::facet_wrap(~set, scales = "free_y", labeller = ggplot2::as_labeller(stats::setNames(info$label, info$set))) +
+    ggplot2::facet_wrap(
+      ~set,
+      scales = "free_y",
+      labeller = ggplot2::as_labeller(stats::setNames(info$label, info$set))
+    ) +
     ggplot2::theme_minimal(base_size = 14) +
     ggplot2::theme(
       axis.text.y = ggplot2::element_blank(),
@@ -253,17 +341,34 @@ unifIsoResult_roseplot <- function(uni.res, alpha, drawlabs = TRUE, cols = NULL,
 #' # Placeholder for lollipop plot usage
 #' }
 # rename to lollipop(..)
-unifIsoResult_lollipop <- function(uni.res, alpha, drawlabs = TRUE, cols = NULL, setnames = TRUE, width = 0.6) {
-  plot_data <- compute_ci_table(uni.res, alpha) |> add_indexed_geometry(width = width)
+unifIsoResult_lollipop <- function(
+  uni.res,
+  alpha,
+  drawlabs = TRUE,
+  cols = NULL,
+  setnames = TRUE,
+  width = 0.6
+) {
+  plot_data <- compute_ci_table(uni.res, alpha) |>
+    add_indexed_geometry(width = width)
   info <- compute_facet_info(plot_data)
   sc <- get_fill_col_scales(cols)
 
-  p <- ggplot2::ggplot(plot_data) |> add_lollipop_layers(info, x = "xpos", xmin = "xmin", xmax = "xmax")
-  if (drawlabs) p <- add_repel_labels(p, plot_data, x = "xpos")
+  p <- ggplot2::ggplot(plot_data) |>
+    add_lollipop_layers(info, x = "xpos", xmin = "xmin", xmax = "xmax")
+  if (drawlabs) {
+    p <- add_repel_labels(p, plot_data, x = "xpos")
+  }
 
-  p + sc$fill + sc$col +
+  p +
+    sc$fill +
+    sc$col +
     ggplot2::scale_x_continuous(breaks = NULL) +
-    ggplot2::facet_wrap(~set, scales = "free", labeller = ggplot2::as_labeller(stats::setNames(info$label, info$set))) +
+    ggplot2::facet_wrap(
+      ~set,
+      scales = "free",
+      labeller = ggplot2::as_labeller(stats::setNames(info$label, info$set))
+    ) +
     ggplot2::theme_minimal(base_size = 14) +
     ggplot2::theme(
       axis.text.x = ggplot2::element_blank(),

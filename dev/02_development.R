@@ -12,9 +12,6 @@ devtools::install()
 devtools::load_all()
 #Ctrl + Shift + L
 
-
-
-
 # fix error that cpp is not available
 Rcpp::compileAttributes()
 
@@ -23,7 +20,6 @@ devtools::document()
 
 # 3. Force-recompile C++ code and reload the package cleanly
 pkgload::load_all(recompile = TRUE)
-
 
 
 # check coverage of unittests
@@ -35,7 +31,6 @@ as.data.frame(cover_res)
 covr::zero_coverage(cover_res)
 
 
-
 # 3. Run unit tests
 devtools::test()
 #Ctrl + Shift + T
@@ -43,7 +38,6 @@ devtools::test()
 # 4. Check package health (CRAN standards)
 devtools::check()
 #Ctrl + Shift + E
-
 
 devtools::check(cran = TRUE)
 
@@ -55,7 +49,6 @@ rhub::rhub_setup()
 # Submit checks across multiple platforms
 rhub::rhub_check()
 # rhub will run you through.
-
 
 # R development version for windows
 devtools::check_win_devel()
@@ -73,10 +66,5 @@ devtools::build()
 # check finished tarball
 devtools::check_built("../unisono_0.1.0.tar.gz", cran = TRUE)
 
-
 # 5. Build documentation website (optional)
 # pkgdown::build_site()
-
-
-
-

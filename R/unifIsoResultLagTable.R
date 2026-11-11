@@ -36,7 +36,6 @@ new_unifIsoResultLagTable <- function(lag_list) {
 #' # Placeholder for print.unifIsoResultLagTable example
 #' }
 print.unifIsoResultLagTable <- function(x, ...) {
-
   for (i in seq_along(x)) {
     # Coerce to a standard data.frame immediately
     tbl <- as.data.frame(x[[i]])
@@ -46,8 +45,12 @@ print.unifIsoResultLagTable <- function(x, ...) {
     avg_length <- mean(tbl$length, na.rm = TRUE)
     expected_val <- tbl$Expected[1]
 
-    cat(sprintf("Lag %s: Length %g, Expected proportion: %g\n",
-                family_name, avg_length, expected_val))
+    cat(sprintf(
+      "Lag %s: Length %g, Expected proportion: %g\n",
+      family_name,
+      avg_length,
+      expected_val
+    ))
 
     # Identify the out-of-bounds rows before removing columns
     out_of_bounds <- tbl$Expected < tbl$CI_lower | tbl$Expected > tbl$CI_upper
@@ -73,9 +76,12 @@ print.unifIsoResultLagTable <- function(x, ...) {
 
     # Apply conditional coloring to the Proportion column
     # Coloring is applied after padding to maintain visual alignment
-    tbl[["Proportion"]][out_of_bounds] <- cli::col_red(tbl[["Proportion"]][out_of_bounds])
-    tbl[["Proportion"]][!out_of_bounds] <- cli::col_green(tbl[["Proportion"]][!out_of_bounds])
-
+    tbl[["Proportion"]][out_of_bounds] <- cli::col_red(tbl[["Proportion"]][
+      out_of_bounds
+    ])
+    tbl[["Proportion"]][!out_of_bounds] <- cli::col_green(tbl[["Proportion"]][
+      !out_of_bounds
+    ])
 
     # Print header names separated by two spaces
     cat(paste(col_names_padded, collapse = "  "), "\n")

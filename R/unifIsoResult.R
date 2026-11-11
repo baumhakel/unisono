@@ -18,17 +18,26 @@
 #'
 #' @name unifIsoResult
 #' @keywords internal
-new_unifIsoResult <- function(statistic, stat_vec, p_value, moments,
-                              eigenvalues, n_obs, lags_list, window_dims, overlap_dims) {
+new_unifIsoResult <- function(
+  statistic,
+  stat_vec,
+  p_value,
+  moments,
+  eigenvalues,
+  n_obs,
+  lags_list,
+  window_dims,
+  overlap_dims
+) {
   structure(
     list(
-      statistic   = statistic,
-      stat_vec    = stat_vec,
-      p_value     = p_value,
-      moments     = moments,
+      statistic = statistic,
+      stat_vec = stat_vec,
+      p_value = p_value,
+      moments = moments,
       eigenvalues = eigenvalues,
-      n_obs       = n_obs,
-      lags_list   = lags_list,
+      n_obs = n_obs,
+      lags_list = lags_list,
       window_dims = window_dims,
       overlap_dims = overlap_dims
     ),
@@ -49,10 +58,18 @@ new_unifIsoResult <- function(statistic, stat_vec, p_value, moments,
 #' \dontrun{
 #' # TODO: Add basic printing example here
 #' }
-print.unifIsoResult <- function(x, digits = max(3, getOption("digits") - 3), ...) {
+print.unifIsoResult <- function(
+  x,
+  digits = max(3, getOption("digits") - 3),
+  ...
+) {
   cat("Isotropy test for random fields on a grid\n")
   cat("\n")
-  cat("Test statistic:    ", formatC(x$statistic, digits = digits, format = "g"), "\n")
+  cat(
+    "Test statistic:    ",
+    formatC(x$statistic, digits = digits, format = "g"),
+    "\n"
+  )
   cat("p-value:           ", format.pval(x$p_value, digits = digits), "\n")
   cat("Number of lag sets:", length(x$lags_list), "\n")
   cat("Number of lags:    ", sum(vapply(x$lags_list, nrow, 1)), "\n")
@@ -75,36 +92,48 @@ print.unifIsoResult <- function(x, digits = max(3, getOption("digits") - 3), ...
 #' # TODO: Add basic summary example here
 #' }
 summary.unifIsoResult <- function(object, alpha = 0.05, ...) {
-
   # Compute confidence intervals and format the output table
   lag_table <- compute_ci_table(object, alpha = alpha) |>
-    dplyr::select("set", Lag = "label", "length", "prop", "ci_lower", "ci_upper") |>
-    dplyr::rename(Family = "set", Proportion = "prop", CI_lower = "ci_lower", CI_upper = "ci_upper") |>
-    dplyr::mutate(Family = as.factor(.data$Family),
-                  Proportion = round(.data$Proportion, 3),
-                  CI_lower = round(.data$CI_lower, 3),
-                  CI_upper = round(.data$CI_upper, 3))
-
+    dplyr::select(
+      "set",
+      Lag = "label",
+      "length",
+      "prop",
+      "ci_lower",
+      "ci_upper"
+    ) |>
+    dplyr::rename(
+      Family = "set",
+      Proportion = "prop",
+      CI_lower = "ci_lower",
+      CI_upper = "ci_upper"
+    ) |>
+    dplyr::mutate(
+      Family = as.factor(.data$Family),
+      Proportion = round(.data$Proportion, 3),
+      CI_lower = round(.data$CI_lower, 3),
+      CI_upper = round(.data$CI_upper, 3)
+    )
 
   # Split the formatted table into a list of data frames (one per lag family)
   # Append the expected proportion under the null hypothesis of isotropy
   lag_table <- split(lag_table, lag_table$Family) |>
     lapply(function(df) {
-      df$Expected <- round(1 / nrow(df),3)
+      df$Expected <- round(1 / nrow(df), 3)
       df
     })
 
   structure(
     list(
-      statistic      = object$statistic,
-      p_value        = object$p_value,
-      alpha          = alpha,
-      reject         = object$p_value < alpha,
+      statistic = object$statistic,
+      p_value = object$p_value,
+      alpha = alpha,
+      reject = object$p_value < alpha,
       n_lag_families = length(object$lags_list),
-      lag_table      = new_unifIsoResultLagTable(lag_table),
-      n_windows      = object$moments$n_windows,
-      window_dims    = object$window_dims,
-      overlap_dims   = object$overlap_dims
+      lag_table = new_unifIsoResultLagTable(lag_table),
+      n_windows = object$moments$n_windows,
+      window_dims = object$window_dims,
+      overlap_dims = object$overlap_dims
     ),
     class = "summary.unifIsoResult"
   )
@@ -123,14 +152,27 @@ summary.unifIsoResult <- function(object, alpha = 0.05, ...) {
 #' \dontrun{
 #' # TODO: Add basic print.summary example here
 #' }
-print.summary.unifIsoResult <- function(x, digits = max(3, getOption("digits") - 3), ...) {
+print.summary.unifIsoResult <- function(
+  x,
+  digits = max(3, getOption("digits") - 3),
+  ...
+) {
   # Print header, test statistics, and test decision
   cat("Isotropy test for random fields on a grid\n")
   cat(strrep("-", 40), "\n")
-  cat("Test statistic:", formatC(x$statistic, digits = digits, format = "g"), "\n")
+  cat(
+    "Test statistic:",
+    formatC(x$statistic, digits = digits, format = "g"),
+    "\n"
+  )
   cat("p-value:       ", format.pval(x$p_value, digits = digits), "\n")
-  cat("Decision at alpha =", x$alpha, ":",
-      if (x$reject) "reject isotropy" else "fail to reject isotropy", "\n")
+  cat(
+    "Decision at alpha =",
+    x$alpha,
+    ":",
+    if (x$reject) "reject isotropy" else "fail to reject isotropy",
+    "\n"
+  )
   cat("\n")
 
   # Print details about spatial subregions and grid configuration
@@ -140,7 +182,11 @@ print.summary.unifIsoResult <- function(x, digits = max(3, getOption("digits") -
     cat("  Subregion dimensions:", paste(x$window_dims, collapse = " x "), "\n")
   }
   if (!is.null(x$overlap_dims)) {
-    cat("  Overlap dimensions:  ", paste(x$overlap_dims, collapse = " x "), "\n")
+    cat(
+      "  Overlap dimensions:  ",
+      paste(x$overlap_dims, collapse = " x "),
+      "\n"
+    )
   }
   cat("\n")
 
@@ -175,17 +221,35 @@ print.summary.unifIsoResult <- function(x, digits = max(3, getOption("digits") -
 #' \dontrun{
 #' # TODO: Add plotting example here
 #' }
-plot.unifIsoResult <- function(x, alpha = 0.05, force_lollipop = FALSE, drawlabs = TRUE,
-                               cols = NULL, setnames = TRUE, ...) {
+plot.unifIsoResult <- function(
+  x,
+  alpha = 0.05,
+  force_lollipop = FALSE,
+  drawlabs = TRUE,
+  cols = NULL,
+  setnames = TRUE,
+  ...
+) {
   # Select rose plot for 2-dimensional lags unless explicitly overridden
   if (ncol(x$lags_list[[1]]) == 2 && !force_lollipop) {
-    unifIsoResult_roseplot(x, alpha = alpha, drawlabs = drawlabs,
-                           cols = cols, setnames = setnames, ...)
+    unifIsoResult_roseplot(
+      x,
+      alpha = alpha,
+      drawlabs = drawlabs,
+      cols = cols,
+      setnames = setnames,
+      ...
+    )
   } else {
-    unifIsoResult_lollipop(x, alpha = alpha, drawlabs = drawlabs,
-                           cols = cols, setnames = setnames, ...)
+    unifIsoResult_lollipop(
+      x,
+      alpha = alpha,
+      drawlabs = drawlabs,
+      cols = cols,
+      setnames = setnames,
+      ...
+    )
   }
-
 }
 
 
@@ -216,14 +280,18 @@ compute_ci_table <- function(uni.res, alpha = 0.05) {
 
   # Ensure the covariance matrix is strictly positive definite by adding a small nugget
   # based on the minimum eigenvalue
-  Sigma <- uni.res$moments$sig + diag(min(eigen(uni.res$moments$sig)$values) + 1e-10, nlags.total)
+  Sigma <- uni.res$moments$sig +
+    diag(min(eigen(uni.res$moments$sig)$values) + 1e-10, nlags.total)
 
   corm <- stats::cov2cor(Sigma)
   corm <- (corm + t(corm)) / 2 # Symmetrize the correlation matrix to correct floating point inaccuracies
 
   se <- sqrt(diag(Sigma))
   c_alpha <- mvtnorm::qmvnorm(1 - alpha, mean = 0, corr = corm)$quantile
-  intervals <- cbind(uni.res$stat_vec - c_alpha * se, uni.res$stat_vec + c_alpha * se)
+  intervals <- cbind(
+    uni.res$stat_vec - c_alpha * se,
+    uni.res$stat_vec + c_alpha * se
+  )
 
   nobs.v.reps <- rep(vapply(uni.res$n_obs, identity, 1), nlags.v)
   mean.v.reps <- rep(1 / nlags.v, nlags.v)
@@ -243,12 +311,12 @@ compute_ci_table <- function(uni.res, alpha = 0.05) {
   })
 
   tibble::tibble(
-    set      = classvec,
-    lags     = lags_list.mat,
-    prop     = meanvec,
+    set = classvec,
+    lags = lags_list.mat,
+    prop = meanvec,
     ci_lower = intervals.mean[, 1],
     ci_upper = intervals.mean[, 2],
-    label    = label_vec
+    label = label_vec
   ) |>
     dplyr::mutate(length = sqrt(rowSums(.data$lags^2)))
 }

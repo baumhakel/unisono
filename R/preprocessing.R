@@ -1,9 +1,9 @@
-
 #' Convert a SpatialGridDataFrame to a d-Dimensional Numeric Array
 #'
 #' @description
 #' Reshapes the attribute data of a SpatialGridDataFrame into an array based
-#' on the object's GridTopology metadata. Handles both scalar and multivariate fields.
+#' on the object's GridTopology metadata. Handles both scalar and multivariate
+#' fields.
 #'
 #' @param sgdf A \code{SpatialGridDataFrame} object from the \code{sp} package.
 #'
@@ -13,30 +13,28 @@
 #' @keywords internal
 #' @noRd
 .sgdf_to_array <- function(sgdf) {
-
   # Validate input class
 
   if (!inherits(sgdf, "SpatialGridDataFrame")) {
-    stop("Input `sgdf` must inherit from class 'SpatialGridDataFrame'.", call. = FALSE)
+    stop(
+      "Input `sgdf` must inherit from class 'SpatialGridDataFrame'.",
+      call. = FALSE
+    )
   }
 
   # Extract grid topology and attribute dimensions
   spatial_dims <- sgdf@grid@cells.dim
-  n_spatial    <- length(spatial_dims)
-
+  n_spatial <- length(spatial_dims)
 
   data_mat <- as.matrix(sgdf@data)
-  m_vars   <- ncol(data_mat)
+  m_vars <- ncol(data_mat)
 
   # Reshape flat column-major data into array topology
   if (m_vars == 1L) {
-
     target_dims <- spatial_dims
   } else {
-
     target_dims <- c(spatial_dims, m_vars)
   }
-
 
   res_array <- array(data_mat, dim = target_dims)
 
@@ -47,8 +45,8 @@
 #' Convert a SpatialGridDataFrame to a D-Dimensional List-Array
 #'
 #' @description
-#' Reshapes attribute data from a SpatialGridDataFrame into a list-array with spatial
-#' dimensions matching the object's GridTopology.
+#' Reshapes attribute data from a SpatialGridDataFrame into a list-array with
+#' spatial dimensions matching the object's GridTopology.
 
 #'
 #' @param sgdf A \code{SpatialGridDataFrame} object.
@@ -61,44 +59,38 @@
 #' @keywords internal
 #' @noRd
 .sgdf_to_list <- function(sgdf, drop_single_col = TRUE) {
-
   # Validate input and extract topology
 
   if (!inherits(sgdf, "SpatialGridDataFrame")) {
-    stop("Input `sgdf` must inherit from class 'SpatialGridDataFrame'.", call. = FALSE)
+    stop(
+      "Input `sgdf` must inherit from class 'SpatialGridDataFrame'.",
+      call. = FALSE
+    )
   }
 
   spatial_dims <- sgdf@grid@cells.dim
-  n_spatial    <- length(spatial_dims)
-  n_cells      <- prod(spatial_dims)
-  df_data      <- sgdf@data
-  n_cols       <- ncol(df_data)
+  n_spatial <- length(spatial_dims)
+  n_cells <- prod(spatial_dims)
+  df_data <- sgdf@data
+  n_cols <- ncol(df_data)
 
   # Extract cell observations
 
-
   if (n_cols == 1L && drop_single_col) {
-
     col_vals <- df_data[[1L]]
 
     if (is.list(col_vals)) {
-
       spdat_l <- col_vals
     } else {
-
       spdat_l <- as.list(col_vals)
     }
   } else {
-
-
     spdat_l <- lapply(seq_len(n_cells), function(i) {
-
       as.list(df_data[i, , drop = FALSE])
     })
   }
 
   # Assign spatial dimensions to the list
-
 
   dim(spdat_l) <- spatial_dims
 
@@ -152,23 +144,19 @@
 
   gdt$coords <- round(gdt$coords)
 
-
   # Extract grid topology and attribute dimensions
-  n_spatial    <- ncol(gdt$coords)
+  n_spatial <- ncol(gdt$coords)
   spatial_dims <- apply(gdt$coords, MARGIN = 2, max)
 
   data_mat <- as.matrix(gdt$data)
-  m_vars   <- ncol(data_mat)
+  m_vars <- ncol(data_mat)
 
   # Reshape flat column-major data into array topology
   if (m_vars == 1L) {
-
     target_dims <- spatial_dims
   } else {
-
     target_dims <- c(spatial_dims, m_vars)
   }
-
 
   res_array <- array(data_mat, dim = target_dims)
 
@@ -184,30 +172,48 @@
 #'
 #' @keywords internal
 #' @noRd
-.validate_iso_inputs <- function(spdata, objfunc, minimize, lags_list, window_dims, overlap_dims) {
+.validate_iso_inputs <- function(
+  spdata,
+  objfunc,
+  minimize,
+  lags_list,
+  window_dims,
+  overlap_dims
+) {
   spatial_dims <- dim(spdata)
-  if (is.null(spatial_dims))
-    stop("`spdata` must have valid spatial dimensions (`dim(spdata)` cannot be NULL).", call. = FALSE)
-
+  if (is.null(spatial_dims)) {
+    stop(
+      "`spdata` must have valid spatial dimensions (`dim(spdata)` cannot be NULL).",
+      call. = FALSE
+    )
+  }
 
   if (!is.function(objfunc)) {
     if (is.list(spdata) || objfunc != "normdiff") {
-      stop("`objfunc` must be a valid function accepting field observation pairs.", call. = FALSE)
+      stop(
+        "`objfunc` must be a valid function accepting field observation pairs.",
+        call. = FALSE
+      )
     }
   }
 
   # Standardize lags_list to a list of matrices
   if (is.null(lags_list)) {
-    ds <- length(spatial_dims) - ifelse(spatial_dims[length(spatial_dims)] == 1, 1, 0)
+    ds <- length(spatial_dims) -
+      ifelse(spatial_dims[length(spatial_dims)] == 1, 1, 0)
     lags_list <- list(rbind(diag(1, ds), diag(-1, ds)))
   }
 
-  if (!is.list(lags_list) && !is.matrix(lags_list))
-    stop("`lags_list` must be a list of matrices or a single matrix.", call. = FALSE)
+  if (!is.list(lags_list) && !is.matrix(lags_list)) {
+    stop(
+      "`lags_list` must be a list of matrices or a single matrix.",
+      call. = FALSE
+    )
+  }
 
-  if (is.matrix(lags_list))
+  if (is.matrix(lags_list)) {
     lags_list <- list(lags_list)
-
+  }
 
   dh <- ncol(lags_list[[1]])
   if (dh < 2) {
@@ -216,8 +222,10 @@
 
   # Enforce matching dimensions between data and lags
   if (!is.list(spdata)) {
-    if (dh > length(dim(spdata)) || dh < length(dim(spdata))-1) {
-      stop("domain (lags) must be d- or (d-1)-dimensional for d-dimensional data")
+    if (dh > length(dim(spdata)) || dh < length(dim(spdata)) - 1) {
+      stop(
+        "domain (lags) must be d- or (d-1)-dimensional for d-dimensional data"
+      )
     }
   } else {
     if (dh != length(dim(spdata))) {
@@ -233,17 +241,19 @@
       stop("lags_list dimension is not constant")
     }
 
-
     Rsqv <- rowSums(lags^2)
     if (any(abs(Rsqv - Rsqv[1]) > 1e-6)) {
-      warning("lags_list rows are not all of the same length, test is not valid")
+      warning(
+        "lags_list rows are not all of the same length, test is not valid"
+      )
     } else {
-
-      uqvals1 <- unique(abs(lags[1,]))
+      uqvals1 <- unique(abs(lags[1, ]))
       for (j in seq_len(nrow(lags))[-1]) {
-        uqvalsj <- unique(abs(lags[j,]))
+        uqvalsj <- unique(abs(lags[j, ]))
         if (!all(uqvals1 %in% uqvalsj) || !all(uqvalsj %in% uqvals1)) {
-          warning("lags_list rows are not all permutations of one another (up to sign), test may not be valid. check whether lag set is invariant under orthogonal transformations.")
+          warning(
+            "lags_list rows are not all permutations of one another (up to sign), test may not be valid. check whether lag set is invariant under orthogonal transformations."
+          )
         }
       }
     }
@@ -261,15 +271,23 @@
 
   # Validate window and overlap structures
   if (length(window_dims) != dh) {
-    stop(sprintf("`window_dims` must be a vector of length %d (dh).", dh), call. = FALSE)
+    stop(
+      sprintf("`window_dims` must be a vector of length %d (dh).", dh),
+      call. = FALSE
+    )
   }
   if (length(overlap_dims) != dh) {
-    stop(sprintf("`overlap_dims` must be a vector of length %d (dh).", dh), call. = FALSE)
+    stop(
+      sprintf("`overlap_dims` must be a vector of length %d (dh).", dh),
+      call. = FALSE
+    )
   }
   if (any(window_dims <= overlap_dims)) {
-    stop("`window_dims` must be strictly greater than `overlap_dims` across all axes.", call. = FALSE)
+    stop(
+      "`window_dims` must be strictly greater than `overlap_dims` across all axes.",
+      call. = FALSE
+    )
   }
-
 
   list(
     lags_list = lags_list,
@@ -309,7 +327,7 @@ get_lags_list_info <- function(lags_list) {
   for (i in seq_along(lags_list)) {
     lags <- lags_list[[i]]
     nhv[i] <- nrow(lags)
-    Rv[i] <- sqrt(sum(lags[1,]^2))
+    Rv[i] <- sqrt(sum(lags[1, ]^2))
   }
 
   return(list(nhv = nhv, Rv = Rv))

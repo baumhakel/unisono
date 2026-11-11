@@ -49,28 +49,38 @@
 #' @export
 #'
 #' @example man/examples/ex_uni_iso_grid.R
-uni_iso_grid <- function(spdata,
-                         objfunc = "normdiff",
-                         minimize = FALSE,
-                         lags_list = NULL,
-                         window_dims = NULL,
-                         overlap_dims = NULL) {
+uni_iso_grid <- function(
+  spdata,
+  objfunc = "normdiff",
+  minimize = FALSE,
+  lags_list = NULL,
+  window_dims = NULL,
+  overlap_dims = NULL
+) {
   # Dispatch to the appropriate S3 method based on the class of spdata
   UseMethod("uni_iso_grid", spdata)
 }
 
 #' @rdname uni_iso_grid
 #' @export
-uni_iso_grid.matrix <- function(spdata,
-                                objfunc = "normdiff",
-                                minimize = FALSE,
-                                lags_list = NULL,
-                                window_dims = NULL,
-                                overlap_dims = NULL) {
-
+uni_iso_grid.matrix <- function(
+  spdata,
+  objfunc = "normdiff",
+  minimize = FALSE,
+  lags_list = NULL,
+  window_dims = NULL,
+  overlap_dims = NULL
+) {
   # Validate and extract input parameters using zeallot's multi-assignment
-  c(lags_list, window_dims, overlap_dims) %<-% .validate_iso_inputs(
-    spdata, objfunc, minimize, lags_list, window_dims, overlap_dims)
+  c(lags_list, window_dims, overlap_dims) %<-%
+    .validate_iso_inputs(
+      spdata,
+      objfunc,
+      minimize,
+      lags_list,
+      window_dims,
+      overlap_dims
+    )
 
   # Check if the field is a simple matrix structure (not a list of objects)
   if (!is.list(spdata)) {
@@ -85,7 +95,14 @@ uni_iso_grid.matrix <- function(spdata,
   }
 
   # Forward the processed inputs to the internal computational engine
-  uni_iso_grid_engine(spdata, objfunc, minimize, lags_list, window_dims, overlap_dims)
+  uni_iso_grid_engine(
+    spdata,
+    objfunc,
+    minimize,
+    lags_list,
+    window_dims,
+    overlap_dims
+  )
 }
 
 #' @rdname uni_iso_grid
@@ -95,14 +112,14 @@ uni_iso_grid.array <- uni_iso_grid.matrix
 
 #' @rdname uni_iso_grid
 #' @export
-uni_iso_grid.geodata <- function(spdata,
-                                 objfunc = "normdiff",
-                                 minimize = FALSE,
-                                 lags_list = NULL,
-                                 window_dims = NULL,
-                                 overlap_dims = NULL)
-{
-
+uni_iso_grid.geodata <- function(
+  spdata,
+  objfunc = "normdiff",
+  minimize = FALSE,
+  lags_list = NULL,
+  window_dims = NULL,
+  overlap_dims = NULL
+) {
   # Extract the underlying grid data array from the geodata object
   spdata <- .convert_gdt(spdata)
 
@@ -111,17 +128,16 @@ uni_iso_grid.geodata <- function(spdata,
 }
 
 
-
 #' @rdname uni_iso_grid
 #' @export
-uni_iso_grid.SpatialGridDataFrame <- function(spdata,
-                                              objfunc = "normdiff",
-                                              minimize = FALSE,
-                                              lags_list = NULL,
-                                              window_dims = NULL,
-                                              overlap_dims = NULL)
-{
-
+uni_iso_grid.SpatialGridDataFrame <- function(
+  spdata,
+  objfunc = "normdiff",
+  minimize = FALSE,
+  lags_list = NULL,
+  window_dims = NULL,
+  overlap_dims = NULL
+) {
   # Extract the underlying grid data array (or list) from the sp object
   spdata <- .convert_sgdf(spdata)
 
@@ -132,13 +148,14 @@ uni_iso_grid.SpatialGridDataFrame <- function(spdata,
 
 #' @rdname uni_iso_grid
 #' @export
-uni_iso_grid.default <- function(spdata,
-                                 objfunc = "normdiff",
-                                 minimize = FALSE,
-                                 lags_list = NULL,
-                                 window_dims = NULL,
-                                 overlap_dims = NULL)
-{
+uni_iso_grid.default <- function(
+  spdata,
+  objfunc = "normdiff",
+  minimize = FALSE,
+  lags_list = NULL,
+  window_dims = NULL,
+  overlap_dims = NULL
+) {
   # Fail gracefully if an unsupported object class is passed, pasting all inherited classes
   stop(
     sprintf(
@@ -158,13 +175,14 @@ uni_iso_grid.default <- function(spdata,
 #'
 #' @keywords internal
 #' @noRd
-uni_iso_grid_engine <- function(spdata,
-                                objfunc,
-                                minimize,
-                                lags_list = NULL,
-                                window_dims = NULL,
-                                overlap_dims = NULL) {
-
+uni_iso_grid_engine <- function(
+  spdata,
+  objfunc,
+  minimize,
+  lags_list = NULL,
+  window_dims = NULL,
+  overlap_dims = NULL
+) {
   dtot <- dim(spdata)
   dh <- ncol(lags_list[[1]])
   ds <- dtot[1:dh] # Spatial dimensions only
@@ -183,20 +201,22 @@ uni_iso_grid_engine <- function(spdata,
 
   # index_stack allocates space for the argmax indices across all lags
   index_stack <- array(NA, dim = c(dim(spdata)[1:dh], L))
-  lims_mat <- matrix(c(rep(0,dh), ds), nrow = dh, ncol = 2)
+  lims_mat <- matrix(c(rep(0, dh), ds), nrow = dh, ncol = 2)
 
   current_idx <- 1
   for (i in seq_along(lags_list)) {
-
     # Calculate the field of argmax indices for the i-th lag set
     index_field <- get_argmax_indices(spdata, objfunc, lags_list[[i]], minimize)
 
     # index_stack is a dh-dimensional array (plus the lag dimension).
     # We dynamically construct the subsetting expression to assign index_field
     # to the last dimension (i), regardless of the spatial dimension (dh).
-    inds <- rep(alist( , )[1], dh + 1)
+    inds <- rep(alist(,)[1], dh + 1)
     inds[[dh + 1]] <- i
-    index_stack <- do.call(`[<-`, c(list(index_stack), inds, list(value = index_field)))
+    index_stack <- do.call(
+      `[<-`,
+      c(list(index_stack), inds, list(value = index_field))
+    )
 
     # Compute deviations from uniformity
     unif_err <- deviationFromUnif(index_field, nh = nhv[i])
@@ -211,7 +231,14 @@ uni_iso_grid_engine <- function(spdata,
     optrange <- interior_range(ds, Rv[i])
 
     if (optrange$empty) {
-      stop(paste0("The lag set ", i, " is too large for the given data dimensions. Please consider supplying a custom lag set or reducing lag lengths."), call. = FALSE)
+      stop(
+        paste0(
+          "The lag set ",
+          i,
+          " is too large for the given data dimensions. Please consider supplying a custom lag set or reducing lag lengths."
+        ),
+        call. = FALSE
+      )
     }
 
     # Update global bounding box (lims_mat) for spatial evaluation
@@ -220,7 +247,13 @@ uni_iso_grid_engine <- function(spdata,
   }
 
   # Estimate long-run covariance matrix using the stacked indices
-  sighat <- longrunvariance_from_indexfield(index_stack, nhv, window_dims,lims_mat,overlap_dims)
+  sighat <- longrunvariance_from_indexfield(
+    index_stack,
+    nhv,
+    window_dims,
+    lims_mat,
+    overlap_dims
+  )
 
   # Compute eigenvalues and the corresponding p-value via Davies' method
   lambda <- eigen(sighat$sig)$values
@@ -228,13 +261,13 @@ uni_iso_grid_engine <- function(spdata,
 
   # Return results as a custom S3 object
   new_unifIsoResult(
-    statistic   = err_sum,
-    stat_vec    = err_stack,
-    p_value     = pval,
-    moments     = sighat,
+    statistic = err_sum,
+    stat_vec = err_stack,
+    p_value = pval,
+    moments = sighat,
     eigenvalues = lambda,
-    n_obs       = nObsv,
-    lags_list   = lags_list,
+    n_obs = nObsv,
+    lags_list = lags_list,
     window_dims = window_dims,
     overlap_dims = overlap_dims
   )

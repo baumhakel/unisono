@@ -14,33 +14,43 @@ sz3 <- 8
 
 # Setup mock spatial data using the geoR package
 rf_dat2d <- withr::with_seed(1, {
-  geoR::grf(n = sz2^2, nsim=2,
-                      grid = expand.grid(1:sz2, 1:sz2),
-                      cov.model = "exponential", cov.pars = c(1, 1), nugget = 0.1,
-                      messages = FALSE)
+  geoR::grf(
+    n = sz2^2,
+    nsim = 2,
+    grid = expand.grid(1:sz2, 1:sz2),
+    cov.model = "exponential",
+    cov.pars = c(1, 1),
+    nugget = 0.1,
+    messages = FALSE
+  )
 })
 rf_dat3d <- withr::with_seed(1, {
-  geoR::grf(n = sz3^3, nsim=2,
-                      grid = expand.grid(1:sz3, 1:sz3, 1:sz3),
-                      cov.model = "exponential", cov.pars = c(1, 2), nugget = 0.1,
-                      messages = FALSE)
+  geoR::grf(
+    n = sz3^3,
+    nsim = 2,
+    grid = expand.grid(1:sz3, 1:sz3, 1:sz3),
+    cov.model = "exponential",
+    cov.pars = c(1, 2),
+    nugget = 0.1,
+    messages = FALSE
+  )
 })
 
 rf_dat2ds <- rf_dat2d
-rf_dat2ds$data <- rf_dat2ds$data[,1]
+rf_dat2ds$data <- rf_dat2ds$data[, 1]
 
 rf_dat3ds <- rf_dat3d
-rf_dat3ds$data <- rf_dat3ds$data[,1]
+rf_dat3ds$data <- rf_dat3ds$data[, 1]
 
 # --- Array field fixtures ---
 
 # Scalar field with a dummy dimension
-spd.asd <- array(rf_dat2d$data[,1], dim = c(sz2, sz2, 1))
-spd.asd3 <- array(rf_dat3d$data[,1], dim = c(sz3, sz3, sz3, 1))
+spd.asd <- array(rf_dat2d$data[, 1], dim = c(sz2, sz2, 1))
+spd.asd3 <- array(rf_dat3d$data[, 1], dim = c(sz3, sz3, sz3, 1))
 
 # Scalar field without a dummy dimension
-spd.as <- array(rf_dat2d$data[,1], dim = c(sz2, sz2))
-spd.as3 <- array(rf_dat3d$data[,1], dim = c(sz3, sz3, sz3))
+spd.as <- array(rf_dat2d$data[, 1], dim = c(sz2, sz2))
+spd.as3 <- array(rf_dat3d$data[, 1], dim = c(sz3, sz3, sz3))
 
 # Multivariate field
 spd.am <- array(rf_dat2d$data, dim = c(sz2, sz2, 2))
@@ -49,15 +59,15 @@ spd.am3 <- array(rf_dat3d$data, dim = c(sz3, sz3, sz3, 2))
 # --- List field fixtures ---
 
 # Scalar field
-spd.ls <- as.list(rf_dat2d$data[,1])
+spd.ls <- as.list(rf_dat2d$data[, 1])
 dim(spd.ls) <- c(sz2, sz2)
-spd.ls3 <- as.list(rf_dat3d$data[,1])
+spd.ls3 <- as.list(rf_dat3d$data[, 1])
 dim(spd.ls3) <- c(sz3, sz3, sz3)
 
 # Multivariate field
-spd.lm <- lapply(1:nrow(rf_dat2d$data), function(i) rf_dat2d$data[i,])
+spd.lm <- lapply(1:nrow(rf_dat2d$data), function(i) rf_dat2d$data[i, ])
 dim(spd.lm) <- c(sz2, sz2)
-spd.lm3 <- lapply(1:nrow(rf_dat3d$data), function(i) rf_dat3d$data[i,])
+spd.lm3 <- lapply(1:nrow(rf_dat3d$data), function(i) rf_dat3d$data[i, ])
 dim(spd.lm3) <- c(sz3, sz3, sz3)
 
 # --- SpatialGridDataFrame fixtures ---
@@ -68,43 +78,81 @@ dim(spd.lm3) <- c(sz3, sz3, sz3)
 
 # Univariate array transformation
 spd.sgs <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5), cellsize = c(1, 1), cells.dim = c(sz2, sz2)),
-  data = data.frame(field1 = rf_dat2d$data[,1])
+  grid = sp::GridTopology(
+    cellcentre.offset = c(0.5, 0.5),
+    cellsize = c(1, 1),
+    cells.dim = c(sz2, sz2)
+  ),
+  data = data.frame(field1 = rf_dat2d$data[, 1])
 )
 spd.sgs3 <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5, 0.5), cellsize = c(1, 1, 1), cells.dim = c(sz3, sz3, sz3)),
-  data = data.frame(field1 = rf_dat3d$data[,1])
+  grid = sp::GridTopology(
+    cellcentre.offset = c(0.5, 0.5, 0.5),
+    cellsize = c(1, 1, 1),
+    cells.dim = c(sz3, sz3, sz3)
+  ),
+  data = data.frame(field1 = rf_dat3d$data[, 1])
 )
 
 # Multivariate array transformation
 spd.sgm <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5), cellsize = c(1, 1), cells.dim = c(sz2, sz2)),
+  grid = sp::GridTopology(
+    cellcentre.offset = c(0.5, 0.5),
+    cellsize = c(1, 1),
+    cells.dim = c(sz2, sz2)
+  ),
   data = data.frame(field1 = rf_dat2d$data)
 )
 spd.sgm3 <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5, 0.5), cellsize = c(1, 1, 1), cells.dim = c(sz3, sz3, sz3)),
+  grid = sp::GridTopology(
+    cellcentre.offset = c(0.5, 0.5, 0.5),
+    cellsize = c(1, 1, 1),
+    cells.dim = c(sz3, sz3, sz3)
+  ),
   data = data.frame(field1 = rf_dat3d$data)
 )
 
 # Univariate list transformation (using strings to force list routing)
 spd.sgsl <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5), cellsize = c(1, 1), cells.dim = c(sz2, sz2)),
-  data = data.frame(field1 = ifelse(rf_dat2d$data[,1] > 0, "a", "b"))
+  grid = sp::GridTopology(
+    cellcentre.offset = c(0.5, 0.5),
+    cellsize = c(1, 1),
+    cells.dim = c(sz2, sz2)
+  ),
+  data = data.frame(field1 = ifelse(rf_dat2d$data[, 1] > 0, "a", "b"))
 )
 
 spd.sgsl3 <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5, 0.5), cellsize = c(1, 1, 1), cells.dim = c(sz3, sz3, sz3)),
-  data = data.frame(field1 = ifelse(rf_dat3d$data[,1] > 0, "a", "b"))
+  grid = sp::GridTopology(
+    cellcentre.offset = c(0.5, 0.5, 0.5),
+    cellsize = c(1, 1, 1),
+    cells.dim = c(sz3, sz3, sz3)
+  ),
+  data = data.frame(field1 = ifelse(rf_dat3d$data[, 1] > 0, "a", "b"))
 )
 
 # Multivariate list transformation
 spd.sgml <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5), cellsize = c(1, 1), cells.dim = c(sz2, sz2)),
-  data = data.frame(field1 = ifelse(rf_dat2d$data[,1] > 0, "a", "b"), field2 = ifelse(rf_dat2d$data[,2] > 0, "a", "b"))
+  grid = sp::GridTopology(
+    cellcentre.offset = c(0.5, 0.5),
+    cellsize = c(1, 1),
+    cells.dim = c(sz2, sz2)
+  ),
+  data = data.frame(
+    field1 = ifelse(rf_dat2d$data[, 1] > 0, "a", "b"),
+    field2 = ifelse(rf_dat2d$data[, 2] > 0, "a", "b")
+  )
 )
 spd.sgml3 <- sp::SpatialGridDataFrame(
-  grid = sp::GridTopology(cellcentre.offset = c(0.5, 0.5, 0.5), cellsize = c(1, 1, 1), cells.dim = c(sz3, sz3, sz3)),
-  data = data.frame(field1 = ifelse(rf_dat3d$data[,1] > 0, "a", "b"), field2 = ifelse(rf_dat3d$data[,2] > 0, "a", "b"))
+  grid = sp::GridTopology(
+    cellcentre.offset = c(0.5, 0.5, 0.5),
+    cellsize = c(1, 1, 1),
+    cells.dim = c(sz3, sz3, sz3)
+  ),
+  data = data.frame(
+    field1 = ifelse(rf_dat3d$data[, 1] > 0, "a", "b"),
+    field2 = ifelse(rf_dat3d$data[, 2] > 0, "a", "b")
+  )
 )
 
 
@@ -114,118 +162,119 @@ myobj_uv <- function(xv, yv) {
 }
 
 myobj_mv <- function(x, yl) {
-  return(sapply(yl, function(y) {sum(unlist(x) != unlist(y))}))
+  return(sapply(yl, function(y) {
+    sum(unlist(x) != unlist(y))
+  }))
 }
 
 test_that("uni_iso_grid works across all input variations (array/list, uni/multivariate, 2D/3D, string labels)", {
-
   test_datasets <- list(
     # Array inputs (univariate / multivariate, 2D / 3D)
     "array, scalar, 2D" = list(
-      spdata  = spd.as,
+      spdata = spd.as,
       objfunc = "normdiff",
       ddim = 2
     ),
     "array, scalar, 3D" = list(
-      spdata  = spd.as3,
+      spdata = spd.as3,
       objfunc = "normdiff",
       ddim = 3
     ),
     "array, multivariate, 2D" = list(
-      spdata  = spd.am,
+      spdata = spd.am,
       objfunc = "normdiff",
       ddim = 2
     ),
     "array, multivariate, 3D" = list(
-      spdata  = spd.am3,
+      spdata = spd.am3,
       objfunc = "normdiff",
       ddim = 3
     ),
 
     # List inputs (numeric coordinates/lags)
     "list, scalar, 2D" = list(
-      spdata  = spd.ls,
+      spdata = spd.ls,
       objfunc = myobj_uv,
       ddim = 2
     ),
     "list, scalar, 3D" = list(
-      spdata  = spd.ls3,
+      spdata = spd.ls3,
       objfunc = myobj_uv,
       ddim = 3
     ),
     "list, multivariate, 2D" = list(
-      spdata  = spd.lm,
+      spdata = spd.lm,
       objfunc = myobj_mv,
       ddim = 2
     ),
     "list, multivariate, 3D" = list(
-      spdata  = spd.lm3,
+      spdata = spd.lm3,
       objfunc = myobj_mv,
       ddim = 3
     ),
 
     # SpatialGridDataFrame inputs (numeric labels)
     "SpatialGridDataFrame, scalar, 2D" = list(
-      spdata  = spd.sgs,
+      spdata = spd.sgs,
       objfunc = "normdiff",
       ddim = 2
     ),
     "SpatialGridDataFrame, scalar, 3D" = list(
-      spdata  = spd.sgs3,
+      spdata = spd.sgs3,
       objfunc = "normdiff",
       ddim = 3
     ),
     "SpatialGridDataFrame, multivariate, 2D" = list(
-      spdata  = spd.sgm,
+      spdata = spd.sgm,
       objfunc = "normdiff",
       ddim = 2
     ),
     "SpatialGridDataFrame, multivariate, 3D" = list(
-      spdata  = spd.sgm3,
+      spdata = spd.sgm3,
       objfunc = "normdiff",
       ddim = 3
     ),
 
     # SpatialGridDataFrame inputs (string labels)
     "SpatialGridDataFrame, scalar, 2D (string)" = list(
-      spdata  = spd.sgsl,
+      spdata = spd.sgsl,
       objfunc = myobj_uv,
       ddim = 2
     ),
     "SpatialGridDataFrame, scalar, 3D (string)" = list(
-      spdata  = spd.sgsl3,
+      spdata = spd.sgsl3,
       objfunc = myobj_uv,
       ddim = 3
     ),
     "SpatialGridDataFrame, multivariate, 2D (string)" = list(
-      spdata  = spd.sgml,
+      spdata = spd.sgml,
       objfunc = myobj_mv,
       ddim = 2
     ),
     "SpatialGridDataFrame, multivariate, 3D (string)" = list(
-      spdata  = spd.sgml3,
+      spdata = spd.sgml3,
       objfunc = myobj_mv,
       ddim = 3
     ),
 
     # geodata inputs
     "geodata, scalar, 2D" = list(
-      spdata  = rf_dat2ds,
+      spdata = rf_dat2ds,
       objfunc = "normdiff",
       ddim = 2
     ),
     "geodata, scalar, 3D" = list(
-      spdata  = rf_dat3ds,
+      spdata = rf_dat3ds,
       objfunc = "normdiff",
       ddim = 3
     ),
     "geodata, multivariate, 2D" = list(
-      spdata  = rf_dat2d,
+      spdata = rf_dat2d,
       objfunc = "normdiff",
       ddim = 2
     ),
     "geodata, multivariate, 3D" = list(
-      spdata  = rf_dat3d,
+      spdata = rf_dat3d,
       objfunc = "normdiff",
       ddim = 3
     )
@@ -241,11 +290,10 @@ test_that("uni_iso_grid works across all input variations (array/list, uni/multi
       info = paste0("Test fixture spdata object for '", name, "' is NULL.")
     )
 
-
     # Assert no errors thrown during calculation
     expect_error(
       res <- uni_iso_grid(
-        spdata  = instance$spdata,
+        spdata = instance$spdata,
         objfunc = instance$objfunc,
         lags_list = list(rbind(diag(1, instance$ddim), diag(-1, instance$ddim)))
       ),
@@ -268,10 +316,15 @@ test_that("uni_iso_grid works across all input variations (array/list, uni/multi
 })
 
 rf_dat2d <- withr::with_seed(1, {
-  geoR::grf(n = sz2^2, nsim=1,
-                      grid = expand.grid(1:sz2, 1:sz2),
-                      cov.model = "exponential", cov.pars = c(1, 1), nugget = 0.1,
-                      messages = FALSE)
+  geoR::grf(
+    n = sz2^2,
+    nsim = 1,
+    grid = expand.grid(1:sz2, 1:sz2),
+    cov.model = "exponential",
+    cov.pars = c(1, 1),
+    nugget = 0.1,
+    messages = FALSE
+  )
 })
 
 spd.as <- array(rf_dat2d$data, dim = c(sz2, sz2))
@@ -284,14 +337,13 @@ lags_list <- list(
 
 # Custom objective function
 obj.abs <- function(z0, zlagged) {
-  diffs <- zlagged - matrix(rep(z0, nrow(zlagged)), nrow = nrow(zlagged), byrow = T)
+  diffs <- zlagged -
+    matrix(rep(z0, nrow(zlagged)), nrow = nrow(zlagged), byrow = T)
   sqnorms <- rowSums(abs(diffs))
   return(sqnorms)
 }
 
 test_that("uni_iso_grid handles multiple lag matrices and custom objective functions", {
-
-
   expect_error(
     res <- uni_iso_grid(
       spdata = spd.as,
@@ -326,7 +378,6 @@ test_that("summary method returns expected data structures", {
   expect_output(print(res_sum), "Subsampling setup:")
   expect_output(print(res_sum), "Lag families tested")
 
-
   # Ensure the lag_table was generated correctly
   expect_s3_class(res_sum$lag_table, "unifIsoResultLagTable")
 })
@@ -342,7 +393,10 @@ test_that("plot generates valid ggplot structure and data bindings", {
 
   # Verify that the underlying plot data is correctly inherited from compute_ci_table
   expect_true(is.data.frame(p$data))
-  expect_true(all(c("set", "lags", "prop", "ci_lower", "ci_upper", "length") %in% names(p$data)))
+  expect_true(all(
+    c("set", "lags", "prop", "ci_lower", "ci_upper", "length") %in%
+      names(p$data)
+  ))
 
   # Verify that facets are correctly applied over the lag sets
   expect_true(inherits(p$facet, "FacetWrap"))
@@ -353,7 +407,6 @@ test_that("plot generates valid ggplot structure and data bindings", {
   expect_true("GeomRect" %in% layer_classes)
   expect_true("GeomSegment" %in% layer_classes)
   expect_true("GeomPoint" %in% layer_classes)
-
 
   # Same for lollipop plot
   p <- suppressWarnings(plot(res, force_lollipop = TRUE))
