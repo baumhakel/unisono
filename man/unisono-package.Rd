@@ -4,9 +4,9 @@
 \name{unisono-package}
 \alias{unisono}
 \alias{unisono-package}
-\title{unisono: Uniformity-Based Isotropy Testing for Non-scalar Objects}
+\title{unisono: Uniformity-Based Isotropy Testing for Non-Scalar Objects}
 \description{
-Performs a test of isotropy for random fields observed on regular grids, as proposed by Baumhakel, Hörmann and Neumann (2026) \doi{10.48550/arXiv.2611.14011}. Supports multivariate and abstract (e.g. scalar-, but also function- or object-valued) data. Directional dependencies in localized structures are evaluated via an 'argmax' transformation based on a standard or user-defined objective function, with efficient 'C++' implementations. Includes diagnostic visualizations.
+Hypothesis test for isotropy in random fields observed on regular grids, as proposed by Baumhakel, Hörmann and Neumann (2026) \doi{10.48550/arXiv.2611.14011}. Supports multivariate and abstract (e.g. scalar-, but also function- or object-valued) data. Directional dependencies in localized structures are evaluated via an argmax transformation based on a standard or user-defined objective function, with efficient 'C++' implementations. Includes diagnostic visualizations.
 }
 \seealso{
 Useful links:
@@ -17,13 +17,17 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Julius Baumhakel \email{baumhakel@tugraz.at} (ORCID = 0009-0006-8999-7303)
+\strong{Maintainer}: Julius Baumhakel \email{baumhakel@tugraz.at} (ORCID = 0009-0006-8999-7303) [copyright holder]
 
 Authors:
 \itemize{
-  \item Julius Baumhakel \email{baumhakel@tugraz.at} (ORCID = 0009-0006-8999-7303)
-  \item Siegfried Hörmann (ORCID = 0000-0001-5878-2840)
-  \item Matthias Neumann (ORCID = 0000-0002-5782-6773)
+  \item Julius Baumhakel \email{baumhakel@tugraz.at} (ORCID = 0009-0006-8999-7303) [copyright holder]
+}
+
+Other contributors:
+\itemize{
+  \item Siegfried Hörmann (ORCID = 0000-0001-5878-2840) [contributor]
+  \item Matthias Neumann (ORCID = 0000-0002-5782-6773) [contributor]
 }
 
 }

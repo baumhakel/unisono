@@ -46,6 +46,7 @@ lintr::lint_package(linters = lintr::line_length_linter(80))
 # 5. Local CRAN check
 # ==========================================================================
 devtools::check(cran = TRUE)             # Ctrl+Shift+E; aim for 0 errors/warnings/notes
+devtools::check(remote = TRUE, manual = TRUE)
 
 # ==========================================================================
 # 6. Remote checks (results arrive by email / GitHub Actions)
