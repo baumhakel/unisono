@@ -1,12 +1,14 @@
 #' Isotropy test for random fields on a d-dimensional grid
 #'
 #' @description
-#' Performs a uniformity-based isotropy test for spatial data on a regular grid based on
-#' Baumhakel et al. (2026+).
-#' The function accepts matrices, multidimensional arrays, `SpatialGridDataFrame`, and `geodata` objects.
-#' Depending on the data type, it evaluates the given objective function over specified spatial lags
-#' at every point in the field to find maximizing directions. The proportion of maximizers
-#' are compared to the uniform distribution. to determine whether the field exhibits directional dependence (anisotropy).
+#' Performs a uniformity-based test of isotropy for spatial data observed on a
+#' regular grid, as proposed by Baumhakel et al. (2026). Accepted inputs are
+#' matrices, multidimensional arrays, `SpatialGridDataFrame` and `geodata`
+#' objects. At every location in the field, the objective function is evaluated
+#' over the specified spatial lags to find the maximizing direction. The
+#' empirical proportions of maximizers across directions are then compared with
+#' the uniform distribution; significant deviations indicate directional
+#' dependence (anisotropy).
 #'
 #' @param spdata A spatial data object containing the random field observed on a rectangular d-dimensional grid.
 #'   Can be a `matrix`, `array`, a `SpatialGridDataFrame`, or a `geodata` object.
@@ -23,7 +25,7 @@
 #'   (each row is a lag vector in the scale of the grid step size). If not specified,
 #'   defaults to a single lag set of unit vectors in each spatial dimension and their negatives.
 #'   Lag vectors in the same matrix need to be of the same norm and fulfill the condition
-#'   outlined in Baumhakel et al. (2026+).
+#'   outlined in Baumhakel et al. (2026).
 #' @param window_dims Integer vector. Dimensions of the moving window used to estimate
 #'   the asymptotic long-run covariance matrix. If not specified, defaults to a vector of 2's.
 #' @param overlap_dims Integer vector. Dimensions of overlap for the moving window. If not specified,
@@ -40,7 +42,9 @@
 #'   \item{window_dims}{The used window dimensions.}
 #'   \item{overlap_dims}{The used overlap dimensions.}
 #'
-#' @references Baumhakel, J., Hörmann, S., & Neumann M. (2026+). \emph{Testing isotropy of random fields with values in abstract spaces}
+#' @references Baumhakel, J., Hörmann, S., and Neumann, M. (2026).
+#'   \emph{Testing isotropy of random fields with values in abstract spaces}.
+#'   arXiv preprint arXiv:2611.14011. \doi{10.48550/arXiv.2611.14011}
 #'
 #' @export
 #'

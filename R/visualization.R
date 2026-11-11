@@ -241,7 +241,7 @@ unifIsoResult_roseplot <- function(uni.res, alpha, drawlabs = TRUE, cols = NULL,
 #' @param drawlabs Logical. If \code{TRUE}, adds text labels to the plot.
 #' @param cols Optional color palette.
 #' @param setnames Logical. If \code{TRUE}, prints facet labels.
-#' @param width Numeric. Width of the confidence bounds rects.
+#' @param width Numeric. Width of the confidence bounds rectangles.
 #'
 #' @return A \code{ggplot} object.
 #'

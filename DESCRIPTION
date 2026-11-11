@@ -24,6 +24,7 @@ Authors@R: c(
       role = "aut"
     )
   )
+Language: en-US
 Description: Performs a test of isotropy for random fields observed on regular
     grids, as proposed by Baumhakel, Hörmann and Neumann (2026)
     <doi:10.48550/arXiv.2611.14011>. Supports multivariate and abstract (e.g.

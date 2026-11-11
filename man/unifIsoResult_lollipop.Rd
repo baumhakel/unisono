@@ -24,7 +24,7 @@ unifIsoResult_lollipop(
 
 \item{setnames}{Logical. If \code{TRUE}, prints facet labels.}
 
-\item{width}{Numeric. Width of the confidence bounds rects.}
+\item{width}{Numeric. Width of the confidence bounds rectangles.}
 }
 \value{
 A \code{ggplot} object.
